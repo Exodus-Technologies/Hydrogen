@@ -28,6 +28,7 @@ const normalizePort = val => {
 
   return false;
 };
+
 /**
  * Connects to database
  */
