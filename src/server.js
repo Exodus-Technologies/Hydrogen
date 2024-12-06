@@ -16,7 +16,7 @@ import {
   rateLimitHandler,
   requestResponseHandler
 } from './middlewares';
-import { mainRouter, notFoundRouter } from './routers';
+import { authRouter, mainRouter, notFoundRouter, userRouter } from './routers';
 import { isProductionEnvironment } from './utilities/boolean';
 
 // Create the Express application object
@@ -73,6 +73,12 @@ if (isProductionEnvironment()) {
 
 server.use(BASE_URL, mainRouter);
 logger.info('Loaded main routes middleware.');
+
+server.use(BASE_URL, authRouter);
+logger.info('Loaded auth routes middleware.');
+
+server.use(BASE_URL, userRouter);
+logger.info('Loaded user routes middleware.');
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');

@@ -46,12 +46,13 @@ const source = mongoose;
 export const getDatabaseConnectionString = () => {
   //Generate database string url with environment variables
   const {
+    CLUSTER_DOMAIN,
+    DB_NAME,
     DB_PASS: dbPass,
     DB_USER: dbUser,
-    CLUSTER_DOMAIN,
-    DB_NAME
+    DB_APP_NAME: dbAppName
   } = config.sources.database;
-  return `mongodb+srv://${dbUser}:${dbPass}@${CLUSTER_DOMAIN}/${DB_NAME}?retryWrites=true&w=majority`;
+  return `mongodb+srv://${dbUser}:${dbPass}@${CLUSTER_DOMAIN}/${DB_NAME}?retryWrites=true&w=majority&appName=${dbAppName}`;
 };
 
 export const closeDatabaseConnections = () => {
