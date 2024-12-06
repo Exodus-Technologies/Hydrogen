@@ -3,7 +3,7 @@
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import config from '../config';
-import { TOKEN_EXPIRY } from '../constants';
+import { CUSTOM_ALPHABET, TOKEN_EXPIRY } from '../constants';
 
 const { sign, verify } = jwt;
 const { JWT_SECRET } = config;
@@ -37,4 +37,8 @@ export const verifyJWTToken = token => {
     console.error(err);
     return false;
   }
+};
+
+export const generateOTPCode = () => {
+  return customAlphabet(CUSTOM_ALPHABET, 6)();
 };

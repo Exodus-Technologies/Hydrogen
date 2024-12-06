@@ -28,14 +28,19 @@ export const getUsers = async query => {
     };
 
     // Fetch data and count total documents
-    const [users, total] = await Promise.all([
-      User.find(search, null, options),
-      User.countDocuments(search)
-    ]);
+    const users = await User.find(search, null, options).lean().exec();
+    const total = await User.countDocuments(search);
 
-    if (users) {
-      return [null, { users, total }];
+    const result = users.map(user => ({
+      ...user,
+      total,
+      pages: Math.ceil(total / limit)
+    }));
+
+    if (result) {
+      return [null, result];
     }
+
     return [new Error('No users found with selected query params')];
   } catch (err) {
     logger.error('Error getting user data from db: ', err);
@@ -80,7 +85,9 @@ export const createUser = async payload => {
     }
     const body = { ...payload, isAdmin: convertArgToBoolean(isAdmin) };
     const newUser = new User(body);
+    console.log(newUser);
     const createdUser = await newUser.save();
+    console.log(createdUser);
     return [null, createdUser];
   } catch (err) {
     logger.error('Error saving user data to db: ', err);

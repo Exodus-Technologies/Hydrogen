@@ -47,6 +47,7 @@ const userSchema = new Schema(
 //HASH PASSWORD
 // ============================================
 
+//Function that hashes password
 const getHashedPassword = password => {
   //Generate Salt
   const salt = bcrypt.genSaltSync(HASH_SALT);
@@ -60,7 +61,7 @@ userSchema.pre('save', function (next) {
   //Hash password only if the password has been changed or is new
   if (!user.isModified('password')) return next();
   user.password = getHashedPassword(user.password);
-  next();
+  return next();
 });
 
 userSchema.pre('findOneAndUpdate', function (next) {
