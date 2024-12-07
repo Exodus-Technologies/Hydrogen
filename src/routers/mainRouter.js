@@ -2,8 +2,11 @@
 
 import express from 'express';
 import config from '../config';
-import { HttpStatusCodes } from '../constants';
-import { validateAuthorizationTokenHandler } from '../middlewares';
+import {
+  hasPermissionHandler,
+  validateAuthorizationTokenHandler
+} from '../middlewares';
+import { HttpStatusCodes } from '../response-codes';
 import { capitalizeFirstLetter } from '../utilities/strings';
 import { fancyTimeFormat } from '../utilities/time';
 
@@ -33,12 +36,20 @@ router.get('/probeCheck', (_, res) => {
   });
 });
 
-router.get('/ip', validateAuthorizationTokenHandler, (req, res) =>
-  res.send(req.ip)
+router.get(
+  '/getIp',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_CONFIGURE']),
+  (req, res) => res.send(req.ip)
 );
 
-router.get('/getConfiguration', validateAuthorizationTokenHandler, (_, res) => {
-  res.status(HttpStatusCodes.OK).send(config);
-});
+router.get(
+  '/getConfiguration',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_CONFIGURE']),
+  (_, res) => {
+    res.status(HttpStatusCodes.OK).send(config);
+  }
+);
 
 export default router;

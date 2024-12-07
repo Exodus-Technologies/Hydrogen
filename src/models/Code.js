@@ -7,7 +7,7 @@ import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema, model } = mongoose;
 const { sources } = config;
-const { expiryTime: expires } = sources.database;
+const { EXPIRY_TIME: expires } = sources.database;
 
 const autoIncrement = mongooseSequence(mongoose);
 

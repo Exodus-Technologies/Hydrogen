@@ -1,7 +1,7 @@
 'use strict';
 
 import express from 'express';
-import { getStatusMessage, HttpStatusCodes } from '../constants';
+import { HttpStatusCodes, getStatusMessage } from '../response-codes';
 
 const { Router } = express;
 

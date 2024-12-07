@@ -78,16 +78,16 @@ export const getUserByEmail = async email => {
 export const createUser = async payload => {
   try {
     const { User } = models;
-    const { email, isAdmin } = payload;
+    const { email } = payload;
     const user = await User.findOne({ email });
     if (user) {
       return [new Error('User with email already exists.')];
     }
-    const body = { ...payload, isAdmin: convertArgToBoolean(isAdmin) };
+    const body = {
+      ...payload
+    };
     const newUser = new User(body);
-    console.log(newUser);
     const createdUser = await newUser.save();
-    console.log(createdUser);
     return [null, createdUser];
   } catch (err) {
     logger.error('Error saving user data to db: ', err);

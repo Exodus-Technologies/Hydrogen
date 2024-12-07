@@ -4,7 +4,9 @@ import config from './config';
 import source, {
   closeDatabaseConnections,
   getDatabaseConnectionString,
-  gracefulExit
+  gracefulExit,
+  seedPermissions,
+  seedRoles
 } from './database';
 import logger from './logger';
 import server from './server';
@@ -43,6 +45,19 @@ const initializeDBConnection = () => {
 };
 
 /**
+ * Seeds data to database
+ */
+const initializeSeedOperation = async () => {
+  try {
+    await seedPermissions();
+    await seedRoles();
+  } catch (e) {
+    logger.error(`Error seeding data to db: ${e.message}`);
+    throw e;
+  }
+};
+
+/**
  * Starts web server
  */
 const startServer = () => {
@@ -63,6 +78,7 @@ const runApplication = async () => {
   const { APP_NAME } = config;
   logger.info(`Starting ${APP_NAME} app...`);
   initializeDBConnection();
+  await initializeSeedOperation();
   startServer();
 };
 

@@ -10,9 +10,14 @@ const config = {
   HOST: process.env.HOST,
   PORT: process.env.PORT,
   APP_NAME: process.env.APP_NAME,
+  RATE_LIMIT_MS: +process.env.RATE_LIMIT_MS,
+  RATE_LIMIT_MAX: +process.env.RATE_LIMIT_MAX,
   TRUST_PROXY: convertArgToBoolean(process.env.TRUST_PROXY),
-  HASH_SALT: +process.env.HASH_SALT,
-  JWT_SECRET: process.env.JWT_SECRET,
+  auth: {
+    HASH_SALT: +process.env.HASH_SALT,
+    JWT_SECRET: process.env.JWT_SECRET,
+    TOKEN_EXPIRY: +process.env.TOKEN_EXPIRY
+  },
   sources: {
     database: {
       CLUSTER_DOMAIN: process.env.CLUSTER_DOMAIN,
@@ -20,7 +25,7 @@ const config = {
       DB_USER: process.env.DB_USER,
       DB_PASS: process.env.DB_PASS,
       DB_APP_NAME: process.env.DB_APP_NAME,
-      expiryTime: +process.env.EXPIRY_TIME,
+      EXPIRY_TIME: +process.env.EXPIRY_TIME,
       options: {}
     }
   }

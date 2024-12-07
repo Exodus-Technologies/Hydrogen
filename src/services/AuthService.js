@@ -1,6 +1,5 @@
 'use strict';
 
-import { HttpStatusCodes } from '../constants';
 import logger from '../logger';
 import {
   createOTPCode,
@@ -9,7 +8,11 @@ import {
   verifyOTPCode
 } from '../queries/code';
 import { getUserByEmail, updateLastLogin } from '../queries/users';
-import { badRequest, internalServerErrorRequest } from '../response-codes';
+import {
+  HttpStatusCodes,
+  badRequest,
+  internalServerErrorRequest
+} from '../response-codes';
 import {
   generateAuthorizationToken,
   generateOTPCode,
