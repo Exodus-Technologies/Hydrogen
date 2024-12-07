@@ -12,7 +12,7 @@ exports.login = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error with login: `, err);
+    logger.error(`Error with login: ${err.message}`);
     next(err);
   }
 };
@@ -25,7 +25,9 @@ exports.requestPasswordReset = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error password reset requesting for user: ${email}: `, err);
+    logger.error(
+      `Error password reset requesting for user: ${email}: ${err.message}`
+    );
     next(err);
   }
 };
@@ -36,7 +38,7 @@ exports.verifyOTP = async (req, res, next) => {
     const [statusCode, response] = await AuthService.verifyOTP(email, otpCode);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error verifying otp code for user: ${email}: `, err);
+    logger.error(`Error verifying otp code for user: ${email}: ${err.message}`);
     next(err);
   }
 };
@@ -51,7 +53,7 @@ exports.changePassword = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error with changing password: `, err);
+    logger.error(`Error with changing password: ${err.message}`);
     next(err);
   }
 };

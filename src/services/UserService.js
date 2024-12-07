@@ -1,6 +1,5 @@
 'use strict';
 
-import { HttpStatusCodes } from '../constants';
 import logger from '../logger';
 import {
   createUser,
@@ -9,7 +8,11 @@ import {
   getUsers,
   updateUser
 } from '../queries/users';
-import { badRequest, internalServerErrorRequest } from '../response-codes';
+import {
+  HttpStatusCodes,
+  badRequest,
+  internalServerErrorRequest
+} from '../response-codes';
 
 exports.getUsers = async query => {
   try {

@@ -7,7 +7,7 @@ import config from '../config';
 import { STATES } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema, model } = mongoose;
+const { Schema, model, Types } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 const { HASH_SALT } = config;
 
@@ -32,10 +32,13 @@ const userSchema = new Schema(
       enum: STATES
     },
     zipCode: { type: String },
-    isAdmin: {
-      type: Boolean,
-      default: false
-    },
+    role: { type: String, required: true },
+    permissions: [
+      {
+        type: String,
+        required: true
+      }
+    ],
     lastLoggedIn: {
       type: Date,
       default: Date.now()

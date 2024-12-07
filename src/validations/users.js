@@ -41,10 +41,13 @@ const userCreationValidation = [
     .isString()
     .withMessage('Must provide your first and last name.'),
   body('role')
+    .isString()
+    .notEmpty()
+    .withMessage('Must provide a role for user.'),
+  body('permissions')
     .isArray()
     .notEmpty()
-    .withMessage('Must provide a role for user.')
-    .optional(),
+    .withMessage('Must provide a role for user.'),
   body('dob').isString().optional(),
   body('city')
     .isString()
@@ -81,6 +84,11 @@ const userUpdateValidation = [
     .withMessage('Must provide your first and last name.')
     .optional(),
   body('role')
+    .isString()
+    .notEmpty()
+    .withMessage('Must provide a role for user.')
+    .optional(),
+  body('permissions')
     .isArray()
     .notEmpty()
     .withMessage('Must provide a role for user.')

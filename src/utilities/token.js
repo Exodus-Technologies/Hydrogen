@@ -2,21 +2,22 @@
 
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
+import { customAlphabet } from 'nanoid';
 import config from '../config';
-import { CUSTOM_ALPHABET, TOKEN_EXPIRY } from '../constants';
+import { CUSTOM_ALPHABET } from '../constants';
 
 const { sign, verify } = jwt;
-const { JWT_SECRET } = config;
+const { auth } = config;
+const { JWT_SECRET, TOKEN_EXPIRY } = auth;
 
 export const generateAuthorizationToken = user => {
-  const { isAdmin, email, userId } = user;
+  const { email, fullName, role } = user;
   const expirationTime = moment().add(TOKEN_EXPIRY, 'minutes').valueOf() / 1000;
-  const payload = { isAdmin, email, userId };
   try {
     return sign(
       {
         exp: Math.ceil(expirationTime),
-        data: payload
+        data: { email, fullName, role }
       },
       JWT_SECRET
     );
