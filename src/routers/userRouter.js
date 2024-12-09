@@ -29,7 +29,7 @@ router.get(
 router.get(
   '/getUser/:userId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_EDIT']),
+  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_VIEW']),
   userIdParamValidation,
   validationHandler,
   UserController.getUser

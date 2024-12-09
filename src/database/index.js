@@ -114,6 +114,11 @@ export const seedPermissions = async () => {
       description: 'Create profile'
     },
     {
+      name: 'View Profile',
+      value: 'PROFILE_VIEW',
+      description: 'View profile'
+    },
+    {
       name: 'Edit Profile',
       value: 'PROFILE_EDIT',
       description: 'Edit profile'
@@ -258,7 +263,8 @@ export const seedRoles = async () => {
         'CONTENT_VIEW',
         'EVENTS_VIEW',
         'CONTENT_INTERACT',
-        'PROFILE_EDIT'
+        'PROFILE_EDIT',
+        'PROFILE_VIEW'
       ]
     }
   ];
