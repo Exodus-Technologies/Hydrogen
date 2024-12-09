@@ -71,7 +71,18 @@ export const gracefulExit = () => {
 
 export const seedPermissions = async () => {
   const { Permission } = models;
+
   const permissions = [
+    {
+      name: 'System Administrator',
+      value: 'SYSTEM_ADMIN',
+      description: 'System Administrator'
+    },
+    {
+      name: 'Manage Users',
+      value: 'MANAGE_USERS',
+      description: 'Manage user profiles'
+    },
     {
       name: 'Create Content',
       value: 'CONTENT_CREATE',
@@ -83,9 +94,14 @@ export const seedPermissions = async () => {
       description: 'View content'
     },
     {
-      name: 'Update Content',
-      value: 'CONTENT_UPDATE',
-      description: 'Update content'
+      name: 'Interact Content',
+      value: 'CONTENT_INTERACT',
+      description: 'Interact content'
+    },
+    {
+      name: 'Edit Content',
+      value: 'CONTENT_EDIT',
+      description: 'Edit content'
     },
     {
       name: 'Delete Content',
@@ -93,24 +109,14 @@ export const seedPermissions = async () => {
       description: 'Delete content'
     },
     {
-      name: 'Configure System',
-      value: 'SYSTEM_CONFIGURE',
-      description: 'Configure System'
-    },
-    {
       name: 'Create Profile',
       value: 'PROFILE_CREATE',
       description: 'Create profile'
     },
     {
-      name: 'MANAGE USERS',
-      value: 'MANAGE_USERS',
-      description: 'Manage user profiles'
-    },
-    {
-      name: 'Update Profile',
-      value: 'PROFILE_UPDATE',
-      description: 'Update profile'
+      name: 'Edit Profile',
+      value: 'PROFILE_EDIT',
+      description: 'Edit profile'
     },
     {
       name: 'Delete Profile',
@@ -123,38 +129,48 @@ export const seedPermissions = async () => {
       description: 'View analytics'
     },
     {
-      name: 'View Financial',
+      name: 'View Financials',
       value: 'VIEW_FINANCIALS',
-      description: 'Financial view'
+      description: 'Financials view'
     },
     {
-      name: 'Project Create',
+      name: 'Create Projects',
       value: 'PROJECT_CREATE',
       description: 'Project create'
     },
     {
-      name: 'Project Update',
-      value: 'PROJECT_UPDATE',
-      description: 'Project update'
+      name: 'View Projects',
+      value: 'PROJECTS_VIEW',
+      description: 'Projects view'
     },
     {
-      name: 'Project Delete',
-      value: 'PROJECT_DELETE',
-      description: 'Project delete'
+      name: 'Edit Projects',
+      value: 'PROJECTS_EDIT',
+      description: 'Projects edit'
     },
     {
-      name: 'Create Event',
-      value: 'EVENT_CREATE',
+      name: 'Delete Projects',
+      value: 'PROJECTS_DELETE',
+      description: 'Projects delete'
+    },
+    {
+      name: 'Create Events',
+      value: 'EVENTS_CREATE',
       description: 'Create events'
     },
     {
-      name: 'Event Update',
-      value: 'EVENT_UPDATE',
+      name: 'View Events',
+      value: 'EVENTS_VIEW',
+      description: 'View events'
+    },
+    {
+      name: 'Update Events',
+      value: 'EVENTS_UPDATE',
       description: 'Update events'
     },
     {
-      name: 'Delete Event',
-      value: 'EVENT_DELETE',
+      name: 'Delete Events',
+      value: 'EVENTS_DELETE',
       description: 'Delete events'
     }
   ];
@@ -173,31 +189,77 @@ export const seedPermissions = async () => {
         `${Permission.modelName} collection already has data, skipping seeding....`
       );
     }
-  } catch (error) {
-    logger.error(`Error seeding permissions: ${error.message}`);
+  } catch (err) {
+    logger.error(`Error seeding permissions: ${err.message}`);
   }
 };
-
+/**
+ * System Admin > Manager(s) > Content Creator > Fan/Subscriber
+ */
 export const seedRoles = async () => {
   const { Role } = models;
   const roles = [
     {
       name: 'Admin',
       value: 'ADMIN',
-      description: 'Admin User',
-      permissions: ['create', 'read', 'update', 'delete']
+      description:
+        'An admin user is an individual or entity with comprehensive access to a system or application, granting them control over critical functions such as user management, system configuration, and data access',
+      permissions: ['SYSTEM_ADMIN']
     },
     {
-      name: 'Artist',
-      value: 'ARTIST',
-      description: 'Artist User',
-      permissions: ['create', 'read', 'update']
+      name: 'Manager',
+      value: 'MANAGER',
+      description:
+        "A manager user typically acts as an intermediary between the system's administrative level and regular users. They have elevated permissions to oversee and manage specific operations or teams but do not have the full range of control that an admin possesses.",
+      permissions: [
+        'MANAGE_USERS',
+        'PROFILE_CREATE',
+        'PROFILE_EDIT',
+        'PROFILE_VIEW',
+        'PROFILE_DELETE',
+        'PROJECT_CREATE',
+        'PROJECTS_VIEW',
+        'PROJECTS_EDIT',
+        'PROJECTS_DELETE',
+        'VIEW_FINANCIALS',
+        'CONTENT_VIEW',
+        'CONTENT_INTERACT',
+        'CONTENT_EDIT',
+        'CONTENT_DELETE',
+        'EVENTS_CREATE',
+        'EVENTS_VIEW',
+        'EVENTS_UPDATE',
+        'EVENTS_DELETE',
+        'ANALYTICS_VIEW'
+      ]
+    },
+    {
+      name: 'Content Creator',
+      value: 'CONTENT_CREATOR',
+      description:
+        "A Content Creator is a user role focused on generating, curating, and managing content within a platform or system. This role is pivotal in maintaining the platform's relevance, engagement, and value by producing high-quality, targeted materials for the intended audience.",
+      permissions: [
+        'CONTENT_CREATE',
+        'PROJECTS_VIEW',
+        'CONTENT_VIEW',
+        'EVENTS_VIEW',
+        'CONTENT_INTERACT',
+        'CONTENT_EDIT',
+        'CONTENT_DELETE',
+        'ANALYTICS_VIEW'
+      ]
     },
     {
       name: 'Subscriber',
       value: 'SUBSCRIBER',
-      description: 'Fan',
-      permissions: ['USER_READ', 'USER_UPDATE']
+      description:
+        "A Fan is a user role focused on consuming, interacting with, and engaging with the content or community within a platform. This role is essential for fostering a vibrant and interactive ecosystem, as fans drive the platform's engagement metrics through their activity.",
+      permissions: [
+        'CONTENT_VIEW',
+        'EVENTS_VIEW',
+        'CONTENT_INTERACT',
+        'PROFILE_EDIT'
+      ]
     }
   ];
 
@@ -213,29 +275,8 @@ export const seedRoles = async () => {
         `${Role.modelName} collection already has data, skipping seeding....`
       );
     }
-  } catch (error) {
-    logger.error(`Error seeding roles: ${error.message}`);
-  }
-};
-
-export const seedUsers = async () => {
-  const { User } = models;
-  const users = [];
-
-  try {
-    const count = await User.countDocuments();
-    if (count === 0) {
-      users.forEach(async user => {
-        await new User(user).save();
-      });
-      logger.info(`Data seeded successfully for collection: ${Role.modelName}`);
-    } else {
-      logger.info(
-        `${Role.modelName} collection already has data, skipping seeding....`
-      );
-    }
-  } catch (error) {
-    logger.error(`Error seeding users: ${error.message}`);
+  } catch (err) {
+    logger.error(`Error seeding roles: ${err.message}`);
   }
 };
 

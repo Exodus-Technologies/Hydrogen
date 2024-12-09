@@ -6,18 +6,20 @@ The monolithic repository for Planet Pope and all the services that supports the
 
 ### User Management:
 
-- User details
-- Authorization
+- Authorization (Roles, Permissions)
 - Authentication
-- Roles
-- Permissions
+- Manager user details
+
+### Taxonomy Management:
+
+- Tags
 
 ### Content Management:
 
 - Vidoes
 - Songs
 - Images
-- Documents (Journals)
+- Documents
 
 ### Project Management:
 
@@ -25,28 +27,34 @@ The monolithic repository for Planet Pope and all the services that supports the
 
 ### System Settings:
 
-- Settings Update system-wide
+- Settings update system-wide
 
 ### Event Management:
 
 - Registration
 - Managing details
 
+### Social Interaction:
+
+- Posts
+- Commitments
+- Monitoring communities
+
 ### Subscription Management:
 
-- Black Boys Read (Free)
-- Be a buddy & make a difference (Free)
+- Black Boys Read
+- Be a buddy & make a difference
 - Self Love Project
 - Music
+
+### Nice to haves
+
+---
 
 ### Analytics:
 
 - Engagement
 - _Estimator_
-
-### Taxonomy Management:
-
-- Tags
 
 ### Financial Reporting:
 
@@ -58,5 +66,5 @@ The monolithic repository for Planet Pope and all the services that supports the
 ### User Personas
 
 ```
-Admin > Manager > Artist > Promoter > Content Creator > Moderator > Collaborator > Fan/Subscriber
+ System Admin > Manager(s) > Content Creator > Fan/Subscriber
 ```

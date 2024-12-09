@@ -2,7 +2,11 @@
 
 import express from 'express';
 import { UserController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import {
+  hasPermissionHandler,
+  validateAuthorizationTokenHandler,
+  validationHandler
+} from '../middlewares';
 import {
   userCreationValidation,
   userIdParamValidation,
@@ -15,6 +19,8 @@ const router = Router();
 
 router.get(
   '/getUsers',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS']),
   userQueryValidation,
   validationHandler,
   UserController.getUsers
@@ -22,6 +28,8 @@ router.get(
 
 router.get(
   '/getUser/:userId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_EDIT']),
   userIdParamValidation,
   validationHandler,
   UserController.getUser
@@ -29,6 +37,8 @@ router.get(
 
 router.post(
   '/createUser',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_CREATE']),
   userCreationValidation,
   validationHandler,
   UserController.createUser
@@ -36,6 +46,8 @@ router.post(
 
 router.put(
   '/updateUser/:userId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_EDIT']),
   userUpdateValidation,
   validationHandler,
   UserController.updateUser
@@ -43,6 +55,8 @@ router.put(
 
 router.delete(
   '/deleteUser/:userId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_DELETE']),
   userIdParamValidation,
   validationHandler,
   UserController.deleteUser

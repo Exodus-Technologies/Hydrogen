@@ -2,7 +2,11 @@
 
 import express from 'express';
 import { RoleController } from '../controllers';
-import { validationHandler } from '../middlewares';
+import {
+  hasPermissionHandler,
+  validateAuthorizationTokenHandler,
+  validationHandler
+} from '../middlewares';
 import {
   roleIdParamValidation,
   rolePostValidation,
@@ -15,6 +19,8 @@ const router = Router();
 
 router.get(
   '/getRoles',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   roleQueryValidation,
   validationHandler,
   RoleController.getRoles
@@ -22,6 +28,8 @@ router.get(
 
 router.get(
   '/getRole/:roleId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   roleIdParamValidation,
   validationHandler,
   RoleController.getRole
@@ -29,6 +37,8 @@ router.get(
 
 router.post(
   '/createRole',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   rolePostValidation,
   validationHandler,
   RoleController.createRole
@@ -36,6 +46,8 @@ router.post(
 
 router.put(
   '/updateRole/:roleId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   roleUpdateValidation,
   validationHandler,
   RoleController.updateRole
@@ -43,6 +55,8 @@ router.put(
 
 router.delete(
   '/deleteRole/:roleId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   roleIdParamValidation,
   validationHandler,
   RoleController.deleteRole
