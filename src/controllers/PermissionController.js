@@ -9,7 +9,7 @@ exports.getPermissions = async (req, res, next) => {
     const [statusCode, payload] = await PermissionService.getPermissions(query);
     res.status(statusCode).send(payload);
   } catch (err) {
-    logger.error(`Error with getting permissions:  ${err.message}`);
+    logger.error(`Error with getting permissions: ${err.message}`);
     next(err);
   }
 };
@@ -37,7 +37,7 @@ exports.createPermission = async (req, res, next) => {
     );
     res.status(statusCode).send(payload);
   } catch (err) {
-    logger.error(`Error with creating new permission:  ${err.message}`);
+    logger.error(`Error with creating new permission: ${err.message}`);
     next(err);
   }
 };
@@ -52,7 +52,7 @@ exports.updatePermission = async (req, res, next) => {
     );
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error with updating permission:  ${err.message}`);
+    logger.error(`Error with updating permission: ${err.message}`);
     next(err);
   }
 };
@@ -66,7 +66,7 @@ exports.deletePermissionById = async (req, res, next) => {
     res.status(statusCode).send(response);
   } catch (err) {
     logger.error(
-      `Error with deleting permission by id: ${permissionId}:  ${err.message}`
+      `Error with deleting permission by id: ${permissionId}: ${err.message}`
     );
     next(err);
   }

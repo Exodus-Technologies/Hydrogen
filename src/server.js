@@ -51,12 +51,14 @@ if (isProductionEnvironment()) {
 
   // specify a single subnet
   server.set('trust proxy', TRUST_PROXY);
+  logger.info('Proxy setting enabled.');
 
   //Cors middleware
   server.use(cors());
   logger.info('CORS enabled.');
 
   //Helmet middleware
+  server.use(helmet());
   server.use(
     helmet({
       xPoweredBy: false

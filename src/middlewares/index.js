@@ -99,12 +99,13 @@ const validateAuthorizationTokenHandler = async (req, res, next) => {
       const [statusCode, response] = forbiddenRequest('Token metadata invalid');
       return res.status(statusCode).send(response);
     }
-    console.log(result, user);
+
+    //Setting user for req in the next function in the callstack
     req.user = result.data;
     next();
-  } catch (error) {
-    console.error(error);
-    if (error.name === 'TokenExpiredError') {
+  } catch (err) {
+    console.error(err);
+    if (err.name === 'TokenExpiredError') {
       const [statusCode, response] = forbiddenRequest('Token has expired.');
       return res.status(statusCode).send(response);
     }
@@ -114,22 +115,34 @@ const validateAuthorizationTokenHandler = async (req, res, next) => {
 };
 
 const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
+  if (isDevelopmentEnvironment()) return next();
   try {
     const { email } = req.user;
-    const [_, user] = await getUserByEmail(email);
+    const [error, user] = await getUserByEmail(email);
 
-    const allowed = requiredPermissions.every(perm =>
-      user.permissions.includes(perm)
+    if (error) {
+      const [statusCode, response] = forbiddenRequest(error.message);
+      return res.status(statusCode).send(response);
+    }
+
+    const { permissions } = user;
+
+    const isAllowed = requiredPermissions.every(perm =>
+      permissions.includes(perm)
     );
-    if (!allowed) {
+
+    if (!isAllowed) {
       const [statusCode, response] = forbiddenRequest(
         'User not authorized to perform action.'
       );
       return res.status(statusCode).send(response);
     }
 
+    //Removing user for req in the next function in the callstack
+    delete req.user;
     next();
   } catch (err) {
+    console.error(err);
     const [statusCode, response] = internalServerErrorRequest(
       isProductionEnvironment()
         ? getStatusMessage(HttpStatusCodes.INTERNAL_SERVER_ERROR)

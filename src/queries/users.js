@@ -3,6 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 import { convertArgToBoolean } from '../utilities/boolean';
+import { getRoles } from './roles';
 
 export const getUsers = async query => {
   try {
@@ -78,16 +79,22 @@ export const getUserByEmail = async email => {
 export const createUser = async payload => {
   try {
     const { User } = models;
-    const { email } = payload;
-    const user = await User.findOne({ email });
-    if (user) {
+    const { email, role } = payload;
+
+    const roles = await getRoles({});
+    const validRoles = roles.map(role => role.value);
+
+    if (!validRoles.includes(role)) {
+      return [new Error('Role provided does not exist.')];
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return [new Error('User with email already exists.')];
     }
-    const body = {
-      ...payload
-    };
-    const newUser = new User(body);
-    const createdUser = await newUser.save();
+
+    const user = new User(payload);
+    const createdUser = await user.save();
     return [null, createdUser];
   } catch (err) {
     logger.error('Error saving user data to db: ', err);
