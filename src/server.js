@@ -23,7 +23,8 @@ import {
   permissionRouter,
   roleRouter,
   tagRouter,
-  userRouter
+  userRouter,
+  videoRouter
 } from './routers';
 import { isProductionEnvironment } from './utilities/boolean';
 
@@ -98,6 +99,9 @@ logger.info('Loaded user routes middleware.');
 
 server.use(BASE_URL, tagRouter);
 logger.info('Loaded tag routes middleware.');
+
+server.use(BASE_URL, videoRouter);
+logger.info('Loaded video routes middleware.');
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');

@@ -80,3 +80,11 @@ export const STRONG_PASSWORD_VALIDATIONS_REGEX =
 
 export const PASSWORD_VALIDATION_MESSAGE =
   'Please enter a password at least 8 characters, at least one uppercase letter, one lowercase letter, and one special character.';
+
+export const DEFAULT_VIDEO_FILE_EXTENTION = 'mp4';
+
+export const DEFAULT_THUMBNAIL_FILE_EXTENTION = 'jpeg';
+
+export const DEFAULT_SONG_FILE_EXTENTION = 'mp3';
+
+export const DEFAULT_COVERIMAGE_FILE_EXTENTION = 'jpeg';

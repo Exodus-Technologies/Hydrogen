@@ -7,6 +7,7 @@ import permissionRouter from './permissionRouter';
 import roleRouter from './roleRouter';
 import tagRouter from './tagRouter';
 import userRouter from './userRouter';
+import videoRouter from './videoRouter';
 
 export {
   authRouter,
@@ -15,5 +16,6 @@ export {
   permissionRouter,
   roleRouter,
   tagRouter,
-  userRouter
+  userRouter,
+  videoRouter
 };
