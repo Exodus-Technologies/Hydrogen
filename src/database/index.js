@@ -244,13 +244,13 @@ export const seedRoles = async () => {
       description:
         "A Content Creator is a user role focused on generating, curating, and managing content within a platform or system. This role is pivotal in maintaining the platform's relevance, engagement, and value by producing high-quality, targeted materials for the intended audience.",
       permissions: [
-        'CONTENT_CREATE',
-        'PROJECTS_VIEW',
         'CONTENT_VIEW',
-        'EVENTS_VIEW',
+        'CONTENT_CREATE',
         'CONTENT_INTERACT',
         'CONTENT_EDIT',
         'CONTENT_DELETE',
+        'PROJECTS_VIEW',
+        'EVENTS_VIEW',
         'ANALYTICS_VIEW'
       ]
     },
@@ -263,6 +263,7 @@ export const seedRoles = async () => {
         'CONTENT_VIEW',
         'EVENTS_VIEW',
         'CONTENT_INTERACT',
+        'CONTENT_VIEW',
         'PROFILE_EDIT',
         'PROFILE_VIEW'
       ]
