@@ -7,7 +7,7 @@ import config from '../config';
 import { STATES } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
 
-const { Schema, model, Types } = mongoose;
+const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 const { HASH_SALT } = config;
 
