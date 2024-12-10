@@ -57,10 +57,10 @@ exports.updatePermission = async (req, res, next) => {
   }
 };
 
-exports.deletePermissionById = async (req, res, next) => {
+exports.deletePermission = async (req, res, next) => {
   const { permissionId } = req.params;
   try {
-    const [statusCode, response] = await PermissionService.deletePermissionById(
+    const [statusCode, response] = await PermissionService.deletePermission(
       permissionId
     );
     res.status(statusCode).send(response);

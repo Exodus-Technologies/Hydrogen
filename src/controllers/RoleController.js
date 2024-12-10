@@ -45,7 +45,7 @@ exports.updateRole = async (req, res, next) => {
     const [statusCode, response] = await RoleService.updateRole(roleId, name);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error with updating role: ${err.message}`);
+    logger.error(`Error with updating role by id ${roleId}: ${err.message}`);
     next(err);
   }
 };

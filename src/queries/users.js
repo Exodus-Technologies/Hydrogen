@@ -44,6 +44,7 @@ export const getUsers = async query => {
 
     return [new Error('No users found with selected query params')];
   } catch (err) {
+    console.error(err);
     logger.error('Error getting user data from db: ', err);
     return [new Error('Error getting user data from db')];
   }
@@ -58,7 +59,11 @@ export const getUserById = async userId => {
     }
     return [new Error('User with id does not exist.')];
   } catch (err) {
-    logger.error('Error getting user data to db: ', err);
+    console.error(err);
+    logger.error(
+      `Error getting user data from db by id ${userId}: ${err.message}`
+    );
+    return [new Error('Unable to get user data from db.')];
   }
 };
 
@@ -71,7 +76,8 @@ export const getUserByEmail = async email => {
     }
     return [new Error('Unable to find user with email provided.')];
   } catch (err) {
-    logger.error('Error getting user data to db: ', err);
+    console.error(err);
+    logger.error(`Error getting user data from db by email: ${err.message}`);
     return [new Error('No user found associated with email provided.')];
   }
 };
@@ -97,7 +103,9 @@ export const createUser = async payload => {
     const createdUser = await user.save();
     return [null, createdUser];
   } catch (err) {
-    logger.error('Error saving user data to db: ', err);
+    console.error(err);
+    logger.error(`Error creating user data: ${err.message}`);
+    return [new Error('Unable to create user db.')];
   }
 };
 
@@ -127,7 +135,11 @@ export const updateUser = async (userId, payload) => {
       return [new Error('Unable to update user details.')];
     }
   } catch (err) {
-    logger.error('Error updating user data to db: ', err);
+    console.error(err);
+    logger.error(
+      `Error updating user data from db by id ${userId}: ${err.message}`
+    );
+    return [new Error('Unable to update user data.')];
   }
 };
 
@@ -140,12 +152,15 @@ export const updateLastLogin = async userId => {
     const user = await User.findOneAndUpdate(filter, update, options);
     return [null, user];
   } catch (err) {
-    console.log(err);
+    console.error(err);
+    logger.error(
+      `Error updating user data in db by id ${userId}: ${err.message}`
+    );
     return [new Error('Unable to update user last login details.')];
   }
 };
 
-export const deleteUserById = async userId => {
+export const deleteUser = async userId => {
   try {
     const { User } = models;
     const deletedUser = await User.deleteOne({ userId });
@@ -154,6 +169,10 @@ export const deleteUserById = async userId => {
     }
     return [new Error('Unable to find user to delete details.')];
   } catch (err) {
-    logger.error('Error deleting user data from db: ', err);
+    console.error(err);
+    logger.error(
+      `Error deleting user data in db by id ${userId}: ${err.message}`
+    );
+    return [new Error('Unable to delete user data.')];
   }
 };

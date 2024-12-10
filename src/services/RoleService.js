@@ -28,7 +28,8 @@ exports.getRoles = async query => {
       );
     }
   } catch (err) {
-    logger.error('Error getting roles: ', err);
+    console.error(err);
+    logger.error(`Error getting role data fron db: ${err.message}`);
     return internalServerErrorRequest('Error getting roles.');
   }
 };
@@ -45,7 +46,10 @@ exports.getRole = async roleId => {
       return badRequest(`No role found with id provided.`);
     }
   } catch (err) {
-    logger.error('Error getting role by id ', err);
+    console.error(err);
+    logger.error(
+      `Error getting role data fron db by id ${roleId}: ${err.message}`
+    );
     return internalServerErrorRequest('Error getting role by id.');
   }
 };
@@ -62,7 +66,8 @@ exports.createRole = async payload => {
       return badRequest(error.message);
     }
   } catch (err) {
-    logger.error('Error creating new role: ', err);
+    console.error(err);
+    logger.error(`Error creating role: ${err.message}`);
     return internalServerErrorRequest('Error creating new role.');
   }
 };
@@ -79,7 +84,8 @@ exports.updateRole = async (roleId, name) => {
       return badRequest(error.message);
     }
   } catch (err) {
-    logger.error('Error updating existing role: ', err);
+    console.error(err);
+    logger.error(`Error updating role data in db: ${err.message}`);
     return internalServerErrorRequest('Error updating existing role.');
   }
 };
@@ -92,7 +98,8 @@ exports.deleteRole = async roleId => {
     }
     return badRequest(error.message);
   } catch (err) {
-    logger.error('Error deleting role by id: ', err);
+    console.error(err);
+    logger.error(`Error deleting role data from db ${roleId}: ${err.message}`);
     return internalServerErrorRequest('Error deleting role by id.');
   }
 };

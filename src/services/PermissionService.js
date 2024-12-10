@@ -3,7 +3,7 @@
 import logger from '../logger';
 import {
   createPermission,
-  deletePermissionById,
+  deletePermission,
   getPermissionById,
   getPermissions,
   updatePermission
@@ -28,7 +28,8 @@ exports.getPermissions = async query => {
       );
     }
   } catch (err) {
-    logger.error('Error getting permissions: ', err);
+    console.error(err);
+    logger.error(`Error getting permissions: ${err.message}`, err);
     return internalServerErrorRequest('Error getting permissions.');
   }
 };
@@ -45,7 +46,8 @@ exports.getPermission = async permissionId => {
       return badRequest(`No permission found with id provided.`);
     }
   } catch (err) {
-    logger.error('Error getting permission by id ', err);
+    console.error(err);
+    logger.error(`Error getting permission by id: ${err.message}`);
     return internalServerErrorRequest('Error getting permission by id.');
   }
 };
@@ -62,7 +64,8 @@ exports.createPermission = async payload => {
       return badRequest(error.message);
     }
   } catch (err) {
-    logger.error('Error creating new permission: ', err);
+    console.error(err);
+    logger.error(`Error creating new permission: ${err.message}`);
     return internalServerErrorRequest('Error creating new permission.');
   }
 };
@@ -79,20 +82,22 @@ exports.updatePermission = async (permissionId, payload) => {
       return badRequest(error.message);
     }
   } catch (err) {
-    logger.error('Error updating existing permission: ', err);
+    console.error(err);
+    logger.error(`Error updating existing permission: ${err.message}`);
     return internalServerErrorRequest('Error updating existing permission.');
   }
 };
 
-exports.deletePermissionById = async permissionId => {
+exports.deletePermission = async permissionId => {
   try {
-    const [error, deletedPermission] = await deletePermissionById(permissionId);
+    const [error, deletedPermission] = await deletePermission(permissionId);
     if (deletedPermission) {
       return [HttpStatusCodes.NO_CONTENT];
     }
     return badRequest(error.message);
   } catch (err) {
-    logger.error('Error deleting permission by id: ', err);
+    console.error(err);
+    logger.error(`Error deleting permission by id: ${err.message}`);
     return internalServerErrorRequest('Error deleting permission by id.');
   }
 };

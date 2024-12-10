@@ -9,7 +9,7 @@ exports.getUsers = async (req, res, next) => {
     const [statusCode, response] = await UserService.getUsers(query);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error getting users:  ${err.message}`);
+    logger.error(`Error getting users: ${err.message}`);
     next(err);
   }
 };
@@ -31,7 +31,7 @@ exports.createUser = async (req, res, next) => {
     const [statusCode, response] = await UserService.createUser(body);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error creating user:  ${err.message}`);
+    logger.error(`Error creating user: ${err.message}`);
     next(err);
   }
 };
@@ -54,7 +54,7 @@ exports.deleteUser = async (req, res, next) => {
     const [statusCode, response] = await UserService.deleteUser(userId);
     res.status(statusCode).send(response);
   } catch (err) {
-    logger.error(`Error deleting user: ${userId}:  ${err.message}`);
+    logger.error(`Error deleting user: ${userId}: ${err.message}`);
     next(err);
   }
 };
