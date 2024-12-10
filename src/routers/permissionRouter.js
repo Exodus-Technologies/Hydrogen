@@ -59,7 +59,7 @@ router.delete(
   hasPermissionHandler(['SYSTEM_ADMIN']),
   permissionIdParamValidation,
   validationHandler,
-  PermissionController.deletePermissionById
+  PermissionController.deletePermission
 );
 
 export default router;

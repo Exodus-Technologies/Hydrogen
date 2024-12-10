@@ -99,7 +99,7 @@ export const updatePermission = async (permissionId, payload) => {
   }
 };
 
-export const deletePermissionById = async permissionId => {
+export const deletePermission = async permissionId => {
   try {
     const { Permission } = models;
     const deletedPermission = await Permission.deleteOne({ permissionId });

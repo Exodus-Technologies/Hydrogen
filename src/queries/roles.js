@@ -40,7 +40,9 @@ export const getRoles = async query => {
       return [null, result];
     }
   } catch (err) {
-    logger.error('Error getting role data from db: ', err);
+    console.error(err);
+    logger.error(`Error getting role data from db: ${err.message}`);
+    return [new Error('Unable to get role data from db.')];
   }
 };
 
@@ -50,7 +52,11 @@ export const getRoleById = async roleId => {
     const role = await Role.findOne({ roleId });
     return role;
   } catch (err) {
-    logger.error('Error getting catgeory data from db by id: ', err);
+    console.error(err);
+    logger.error(
+      `Error getting role data from db by id ${roleId}: ${err.message}`
+    );
+    return [new Error('Unable to get role data from db by id.')];
   }
 };
 
@@ -60,7 +66,11 @@ export const getRoleByName = async name => {
     const role = await Role.findOne({ name });
     return role;
   } catch (err) {
-    logger.error('Error getting role data from db by name: ', err);
+    console.error(err);
+    logger.error(
+      `Error getting role data from db by name ${name}: ${err.message}`
+    );
+    return [new Error('Unable to get role data from db by name.')];
   }
 };
 
@@ -76,7 +86,9 @@ export const createRole = async payload => {
     const { description, name, roleId } = createdRole;
     return [null, { description, name, roleId }];
   } catch (err) {
-    logger.error('Error saving role data to db: ', err);
+    console.error(err);
+    logger.error(`Error saving role data to db: ${err.message}`);
+    return [new Error('Unable to save data to db.')];
   }
 };
 
@@ -89,7 +101,11 @@ export const updateRole = async (roleId, payload) => {
     const role = await Role.findOneAndUpdate(filter, update, options);
     return [null, role];
   } catch (err) {
-    logger.error('Error updating role data to db: ', err);
+    console.error(err);
+    logger.error(
+      `Error update role data to db by id ${roleId}: ${err.message}`
+    );
+    return [new Error('Unable to update role data to db.')];
   }
 };
 
@@ -100,8 +116,12 @@ export const deleteRole = async roleId => {
     if (deletedRole.deletedCount > 0) {
       return [null, deletedRole];
     }
-    return [new Error('Unable to find role to delete details.')()];
+    return [new Error('Unable to find role to delete details.')];
   } catch (err) {
-    logger.error('Error deleting role by id: ', err);
+    console.error(err);
+    logger.error(
+      `Error deleting role data from db by id ${roleId}: ${err.message}`
+    );
+    return [new Error('Unable to delete role data from db.')];
   }
 };

@@ -3,7 +3,6 @@
 import logger from '../logger';
 import {
   createUser,
-  deleteUserById,
   getUserById,
   getUsers,
   updateUser
@@ -29,6 +28,7 @@ exports.getUsers = async query => {
       return badRequest(error.message);
     }
   } catch (err) {
+    console.error(err);
     logger.error(`Error getting all users: ${err.message}`);
     return internalServerErrorRequest('Error getting users.');
   }
@@ -48,6 +48,7 @@ exports.getUser = async userId => {
     }
     return badRequest(error.message);
   } catch (err) {
+    console.error(err);
     logger.error(`Error getting user: ${err.message}`);
     return internalServerErrorRequest('Error getting user.');
   }
@@ -68,6 +69,7 @@ exports.createUser = async payload => {
       return badRequest(error.message);
     }
   } catch (err) {
+    console.error(err);
     logger.error(`Error creating user: ${err.message}`);
     return internalServerErrorRequest('Error creating user.');
   }
@@ -84,6 +86,7 @@ exports.updateUser = async (userId, payload) => {
     }
     return badRequest(error.message);
   } catch (err) {
+    console.error(err);
     logger.error(`Error updating user: ${err.message}`);
     return internalServerErrorRequest('Error updating user.');
   }
@@ -93,7 +96,7 @@ exports.deleteUser = async userId => {
   try {
     const [error, user] = await getUserById(userId);
     if (user) {
-      const [error, deletedUser] = await deleteUserById(userId);
+      const [error, deletedUser] = await deleteUser(userId);
       if (deletedUser) {
         return [HttpStatusCodes.NO_CONTENT];
       }
@@ -101,6 +104,7 @@ exports.deleteUser = async userId => {
     }
     return badRequest(error.message);
   } catch (err) {
+    console.error(err);
     logger.error(`Error deleting user by id: ${err.message}`);
     return internalServerErrorRequest('Error deleting user by id.');
   }

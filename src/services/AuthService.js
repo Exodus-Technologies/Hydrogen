@@ -40,7 +40,8 @@ exports.validateLogin = async (email, password) => {
     }
     return badRequest(error.message);
   } catch (err) {
-    logger.error(`Error logging with credentials: `, err);
+    console.error(err);
+    logger.error(`Error logging with credentials: ${err.message}`);
     return internalServerErrorRequest('Error logging with credentials.');
   }
 };
@@ -71,6 +72,7 @@ exports.requestPasswordReset = async email => {
       }
     ];
   } catch (err) {
+    console.error(err);
     logger.error(`Error password reset requesting: ${err.message}`);
     return internalServerErrorRequest('Error password reset requesting.');
   }
@@ -91,7 +93,8 @@ exports.verifyOTP = async (email, otpCode) => {
     }
     return badRequest(error.message);
   } catch (err) {
-    logger.error('Error verifing code: ', err);
+    console.error(err);
+    logger.error(`Error verifing code: ${err.message}`);
     return internalServerErrorRequest('Error verifing code.');
   }
 };
@@ -121,6 +124,7 @@ exports.changePassword = async (email, token, newPassword) => {
     }
     return badRequest('Token provided does not match.');
   } catch (err) {
+    console.error(err);
     logger.error(`Error updating password: ${err.message}`);
     return internalServerErrorRequest('Error updating password.');
   }
