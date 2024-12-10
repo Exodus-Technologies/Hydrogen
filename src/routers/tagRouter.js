@@ -20,7 +20,7 @@ const router = Router();
 router.get(
   '/getTags',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler(['SYSTEM_ADMIN', 'TAG_VIEW']),
   tagQueryValidation,
   validationHandler,
   TagController.getTags
@@ -29,7 +29,7 @@ router.get(
 router.get(
   '/getTag/:tagId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler(['SYSTEM_ADMIN', 'TAG_VIEW']),
   tagIdParamValidation,
   validationHandler,
   TagController.getTag
@@ -38,7 +38,7 @@ router.get(
 router.post(
   '/createTag',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler(['SYSTEM_ADMIN', 'TAG_CREATE']),
   tagPostValidation,
   validationHandler,
   TagController.createTag
@@ -47,7 +47,7 @@ router.post(
 router.put(
   '/updateTag/:tagId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler(['SYSTEM_ADMIN', 'TAG_UPDATE']),
   tagUpdateValidation,
   validationHandler,
   TagController.updateTag
@@ -56,7 +56,7 @@ router.put(
 router.delete(
   '/deleteTag/:tagId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler(['SYSTEM_ADMIN', 'TAG_DELETE']),
   tagIdParamValidation,
   validationHandler,
   TagController.deleteTag
