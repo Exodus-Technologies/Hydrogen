@@ -19,6 +19,27 @@ const config = {
     TOKEN_EXPIRY: +process.env.TOKEN_EXPIRY
   },
   sources: {
+    aws: {
+      region: process.env.AWS_REGION,
+      signatureVersion: process.env.AWS_SIGNATURE_VERSION,
+      cloudFront: {
+        videoDistributionURI:
+          process.env.AWS_CLOUDFRONT_VIDEOS_DISTRIBUTION_URI,
+        thumbnailDistributionURI:
+          process.env.AWS_CLOUDFRONT_THUMBNAILS_DISTRIBUTION_URI,
+        songDistributionURI: process.env.AWS_CLOUDFRONT_SONGS_DISTRIBUTION_URI,
+        coverImageDistributionURI:
+          process.env.AWS_CLOUDFRONT_COVERIMAGES_DISTRIBUTION_URI
+      },
+      s3: {
+        s3AccessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
+        s3SecretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
+        s3ThumbnailBucketName: process.env.S3_THUMBNAIL_BUCKET_NAME,
+        s3VideoBucketName: process.env.S3_VIDEO_BUCKET_NAME,
+        s3SongBucketName: process.env.S3_SONG_BUCKET_NAME,
+        s3CoverImageBucketName: process.env.S3_COVERIMAGE_BUCKET_NAME
+      }
+    },
     database: {
       CLUSTER_DOMAIN: process.env.CLUSTER_DOMAIN,
       DB_NAME: process.env.DB_NAME,
