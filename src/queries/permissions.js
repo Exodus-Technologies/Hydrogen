@@ -46,7 +46,7 @@ export const getPermissions = async query => {
   }
 };
 
-export const getPermissionById = async permissionId => {
+export const getPermission = async permissionId => {
   try {
     const { Permission } = models;
     const permission = await Permission.findOne({ permissionId });

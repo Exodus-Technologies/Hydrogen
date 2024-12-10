@@ -4,7 +4,7 @@ import logger from '../logger';
 import {
   createPermission,
   deletePermission,
-  getPermissionById,
+  getPermission,
   getPermissions,
   updatePermission
 } from '../queries/permissions';
@@ -36,7 +36,7 @@ exports.getPermissions = async query => {
 
 exports.getPermission = async permissionId => {
   try {
-    const permission = await getPermissionById(permissionId);
+    const permission = await getPermission(permissionId);
     if (permission) {
       return [
         HttpStatusCodes.OK,

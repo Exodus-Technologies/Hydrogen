@@ -50,7 +50,7 @@ export const getUsers = async query => {
   }
 };
 
-export const getUserById = async userId => {
+export const getUser = async userId => {
   try {
     const { User } = models;
     const user = await User.findOne({ userId });

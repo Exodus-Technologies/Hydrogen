@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-export const getCodeByUserId = async userId => {
+export const getCode = async userId => {
   try {
     const { Code } = models;
     const code = await Code.findOne({ userId });

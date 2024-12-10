@@ -4,7 +4,7 @@ import logger from '../logger';
 import {
   createOTPCode,
   deleteCode,
-  getCodeByUserId,
+  getCode,
   verifyOTPCode
 } from '../queries/code';
 import { getUserByEmail, updateLastLogin } from '../queries/users';
@@ -55,7 +55,7 @@ exports.requestPasswordReset = async email => {
 
     const { userId } = user;
 
-    const [_, existingCode] = await getCodeByUserId(userId);
+    const [_, existingCode] = await getCode(userId);
 
     if (existingCode) {
       deleteCode(userId);
