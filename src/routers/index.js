@@ -5,6 +5,7 @@ import mainRouter from './mainRouter';
 import notFoundRouter from './notFoundRouter';
 import permissionRouter from './permissionRouter';
 import roleRouter from './roleRouter';
+import tagRouter from './tagRouter';
 import userRouter from './userRouter';
 
 export {
@@ -13,5 +14,6 @@ export {
   notFoundRouter,
   permissionRouter,
   roleRouter,
+  tagRouter,
   userRouter
 };

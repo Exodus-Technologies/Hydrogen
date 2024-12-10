@@ -99,14 +99,34 @@ export const seedPermissions = async () => {
       description: 'Interact content'
     },
     {
-      name: 'Edit Content',
-      value: 'CONTENT_EDIT',
-      description: 'Edit content'
+      name: 'Update Content',
+      value: 'CONTENT_UPDATE',
+      description: 'Update content'
     },
     {
       name: 'Delete Content',
       value: 'CONTENT_DELETE',
       description: 'Delete content'
+    },
+    {
+      name: 'Create Tag',
+      value: 'TAG_CREATE',
+      description: 'Create tags'
+    },
+    {
+      name: 'View Tag',
+      value: 'TAG_VIEW',
+      description: 'View tags'
+    },
+    {
+      name: 'Update Tag',
+      value: 'TAG_UPDATE',
+      description: 'Update tags'
+    },
+    {
+      name: 'Delete Tag',
+      value: 'TAG_DELETE',
+      description: 'Delete tags'
     },
     {
       name: 'Create Profile',
@@ -119,9 +139,9 @@ export const seedPermissions = async () => {
       description: 'View profile'
     },
     {
-      name: 'Edit Profile',
-      value: 'PROFILE_EDIT',
-      description: 'Edit profile'
+      name: 'Update Profile',
+      value: 'PROFILE_UPDATE',
+      description: 'Update profile'
     },
     {
       name: 'Delete Profile',
@@ -149,9 +169,9 @@ export const seedPermissions = async () => {
       description: 'Projects view'
     },
     {
-      name: 'Edit Projects',
-      value: 'PROJECTS_EDIT',
-      description: 'Projects edit'
+      name: 'Update Projects',
+      value: 'PROJECTS_UPDATE',
+      description: 'Projects Update'
     },
     {
       name: 'Delete Projects',
@@ -219,18 +239,17 @@ export const seedRoles = async () => {
       permissions: [
         'MANAGE_USERS',
         'PROFILE_CREATE',
-        'PROFILE_EDIT',
+        'PROFILE_UPDATE',
         'PROFILE_VIEW',
         'PROFILE_DELETE',
         'PROJECT_CREATE',
         'PROJECTS_VIEW',
-        'PROJECTS_EDIT',
+        'PROJECTS_UPDATE',
         'PROJECTS_DELETE',
         'VIEW_FINANCIALS',
         'CONTENT_VIEW',
         'CONTENT_INTERACT',
-        'CONTENT_EDIT',
-        'CONTENT_DELETE',
+        'TAG_VIEW',
         'EVENTS_CREATE',
         'EVENTS_VIEW',
         'EVENTS_UPDATE',
@@ -244,11 +263,15 @@ export const seedRoles = async () => {
       description:
         "A Content Creator is a user role focused on generating, curating, and managing content within a platform or system. This role is pivotal in maintaining the platform's relevance, engagement, and value by producing high-quality, targeted materials for the intended audience.",
       permissions: [
-        'CONTENT_VIEW',
         'CONTENT_CREATE',
+        'CONTENT_VIEW',
         'CONTENT_INTERACT',
-        'CONTENT_EDIT',
+        'CONTENT_UPDATE',
         'CONTENT_DELETE',
+        'TAG_CREATE',
+        'TAG_VIEW',
+        'TAG_UPDATE',
+        'TAG_DELETE',
         'PROJECTS_VIEW',
         'EVENTS_VIEW',
         'ANALYTICS_VIEW'
@@ -264,7 +287,7 @@ export const seedRoles = async () => {
         'EVENTS_VIEW',
         'CONTENT_INTERACT',
         'CONTENT_VIEW',
-        'PROFILE_EDIT',
+        'PROFILE_UPDATE',
         'PROFILE_VIEW'
       ]
     }

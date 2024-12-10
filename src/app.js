@@ -78,7 +78,7 @@ const runApplication = async () => {
   const { APP_NAME } = config;
   logger.info(`Starting ${APP_NAME} app...`);
   initializeDBConnection();
-  await initializeSeedOperation();
+  // await initializeSeedOperation();
   startServer();
 };
 
