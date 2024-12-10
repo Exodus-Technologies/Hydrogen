@@ -2,7 +2,6 @@
 
 import logger from '../logger';
 import models from '../models';
-import { convertArgToBoolean } from '../utilities/boolean';
 import { getRoles } from './roles';
 
 export const getUsers = async query => {
@@ -82,10 +81,10 @@ export const getUserByEmail = async email => {
   }
 };
 
-export const createUser = async payload => {
+export const createUser = async body => {
   try {
     const { User } = models;
-    const { email, role } = payload;
+    const { email, role } = body;
 
     const roles = await getRoles({});
     const validRoles = roles.map(role => role.value);
@@ -112,25 +111,17 @@ export const createUser = async payload => {
 export const updateUser = async (userId, payload) => {
   try {
     const { User } = models;
-    const { email, isAdmin } = payload;
+    const { email } = payload;
     const user = await User.findOne({ email });
     if (user) {
       return [new Error('Unable to change email. Email already in use.')];
     }
     const filter = { userId };
     const options = { new: true };
-    const update = { ...payload, isAdmin: convertArgToBoolean(isAdmin) };
+    const update = { ...payload };
     const updatedUser = await User.findOneAndUpdate(filter, update, options);
     if (updatedUser) {
-      const { email, fullName, city, state, isAdmin } = updatedUser;
-      const user = {
-        email,
-        fullName,
-        city,
-        state,
-        isAdmin
-      };
-      return [null, user];
+      return [null, updatedUser];
     } else {
       return [new Error('Unable to update user details.')];
     }
