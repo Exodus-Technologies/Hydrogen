@@ -22,6 +22,7 @@ import {
   notFoundRouter,
   permissionRouter,
   roleRouter,
+  tagRouter,
   userRouter
 } from './routers';
 import { isProductionEnvironment } from './utilities/boolean';
@@ -94,6 +95,9 @@ logger.info('Loaded auth routes middleware.');
 
 server.use(BASE_URL, userRouter);
 logger.info('Loaded user routes middleware.');
+
+server.use(BASE_URL, tagRouter);
+logger.info('Loaded tag routes middleware.');
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');
