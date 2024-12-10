@@ -1,12 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import {
-  createUser,
-  getUserById,
-  getUsers,
-  updateUser
-} from '../queries/users';
+import { createUser, getUsers, updateUser } from '../queries/users';
 import {
   HttpStatusCodes,
   badRequest,
@@ -36,7 +31,7 @@ exports.getUsers = async query => {
 
 exports.getUser = async userId => {
   try {
-    const [error, user] = await getUserById(userId);
+    const [error, user] = await getUser(userId);
     if (user) {
       return [
         HttpStatusCodes.OK,
@@ -94,7 +89,7 @@ exports.updateUser = async (userId, payload) => {
 
 exports.deleteUser = async userId => {
   try {
-    const [error, user] = await getUserById(userId);
+    const [error, user] = await getUser(userId);
     if (user) {
       const [error, deletedUser] = await deleteUser(userId);
       if (deletedUser) {

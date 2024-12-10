@@ -4,7 +4,7 @@ import logger from '../logger';
 import {
   createRole,
   deleteRole,
-  getRoleById,
+  getRole,
   getRoles,
   updateRole
 } from '../queries/roles';
@@ -36,7 +36,7 @@ exports.getRoles = async query => {
 
 exports.getRole = async roleId => {
   try {
-    const role = await getRoleById(roleId);
+    const role = await getRole(roleId);
     if (role) {
       return [
         HttpStatusCodes.OK,

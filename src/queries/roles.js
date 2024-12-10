@@ -46,7 +46,7 @@ export const getRoles = async query => {
   }
 };
 
-export const getRoleById = async roleId => {
+export const getRole = async roleId => {
   try {
     const { Role } = models;
     const role = await Role.findOne({ roleId });
