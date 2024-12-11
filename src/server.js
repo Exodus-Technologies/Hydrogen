@@ -22,6 +22,7 @@ import {
   notFoundRouter,
   permissionRouter,
   roleRouter,
+  songRouter,
   tagRouter,
   userRouter,
   videoRouter
@@ -102,6 +103,9 @@ logger.info('Loaded tag routes middleware.');
 
 server.use(BASE_URL, videoRouter);
 logger.info('Loaded video routes middleware.');
+
+server.use(BASE_URL, songRouter);
+logger.info('Loaded song routes middleware.');
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');
