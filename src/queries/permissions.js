@@ -42,7 +42,9 @@ export const getPermissions = async query => {
       return [null, result];
     }
   } catch (err) {
-    logger.error('Error getting permission data from db: ', err);
+    console.error(err);
+    logger.error(`Error getting permission data from db: ${err.message}`);
+    return [new Error('Error getting permission data from db')];
   }
 };
 
@@ -50,9 +52,13 @@ export const getPermission = async permissionId => {
   try {
     const { Permission } = models;
     const permission = await Permission.findOne({ permissionId });
-    return permission;
+    return [null, permission];
   } catch (err) {
-    logger.error('Error getting permission data from db by id: ', err);
+    console.error(err);
+    logger.error(
+      `Error getting permission data from db by id ${permissionId}: ${err.message}`
+    );
+    return [new Error('Error getting permission data from db')];
   }
 };
 
@@ -60,9 +66,13 @@ export const getPermissionByName = async name => {
   try {
     const { Permission } = models;
     const permission = await Permission.findOne({ name });
-    return permission;
+    return [null, permission];
   } catch (err) {
-    logger.error('Error getting permission data from db by name: ', err);
+    console.error(err);
+    logger.error(
+      `Error getting permission data from db by name ${name}: ${err.message}`
+    );
+    return [new Error('Error getting permission data from db by name')];
   }
 };
 
@@ -75,10 +85,11 @@ export const createPermission = async payload => {
     }
     const perm = new Permission(payload);
     const createdPermission = await perm.save();
-    const { description, name, permissionId } = createdPermission;
-    return [null, { description, name, permissionId }];
+    return [null, createdPermission];
   } catch (err) {
-    logger.error('Error saving permission data to db: ', err);
+    console.error(err);
+    logger.error(`Error saving permission data to db: ${err.message}`);
+    return [new Error('Error saving permission data to db')];
   }
 };
 
@@ -95,7 +106,9 @@ export const updatePermission = async (permissionId, payload) => {
     );
     return [null, permission];
   } catch (err) {
-    logger.error('Error updating permission data to db: ', err);
+    console.error(err);
+    logger.error(`Error updating permission data to db: ${err.message}`);
+    return [new Error('Error updating permission data to db')];
   }
 };
 
@@ -108,6 +121,10 @@ export const deletePermission = async permissionId => {
     }
     return [new Error('Unable to find permission to delete details.')()];
   } catch (err) {
-    logger.error('Error deleting permission by id: ', err);
+    console.error(err);
+    logger.error(
+      `Error deleting permission by id ${permissionId}: ${err.message}`
+    );
+    return [new Error('Error deleting permission by id')];
   }
 };

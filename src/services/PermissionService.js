@@ -16,16 +16,14 @@ import {
 
 exports.getPermissions = async query => {
   try {
-    const permissions = await getPermissions(query);
+    const [error, permissions] = await getPermissions(query);
     if (permissions) {
       return [
         HttpStatusCodes.OK,
         { message: 'Permissions fetched from db with success', permissions }
       ];
     } else {
-      return badRequest(
-        `Unable to find permissions that matched the search criteria.`
-      );
+      return badRequest(error.message);
     }
   } catch (err) {
     console.error(err);
@@ -36,14 +34,14 @@ exports.getPermissions = async query => {
 
 exports.getPermission = async permissionId => {
   try {
-    const permission = await getPermission(permissionId);
+    const [error, permission] = await getPermission(permissionId);
     if (permission) {
       return [
         HttpStatusCodes.OK,
         { message: 'Permission fetched from db with success', permission }
       ];
     } else {
-      return badRequest(`No permission found with id provided.`);
+      return badRequest(error.message);
     }
   } catch (err) {
     console.error(err);

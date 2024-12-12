@@ -11,13 +11,12 @@ const { EXPIRY_TIME: expires } = sources.database;
 
 const autoIncrement = mongooseSequence(mongoose);
 
-//TOKEN SCHEMA
+//CODE SCHEMA
 //  ============================================
 const optCodeSchema = new Schema({
   userId: {
     type: Number,
     required: true,
-    ref: 'user',
     index: true
   },
   email: {

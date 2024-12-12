@@ -50,7 +50,7 @@ export const getVideoByTitle = async title => {
   try {
     const { Video } = models;
     const video = await Video.findOne({ title });
-    return video;
+    return [null, video];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -64,7 +64,7 @@ export const getVideo = async videoId => {
   try {
     const { Video } = models;
     const video = await Video.findOne({ videoId });
-    return video;
+    return [null, video];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -79,7 +79,7 @@ export const createVideo = async payload => {
     const { Video } = models;
     const video = new Video(payload);
     const createdVideo = await video.save();
-    return createdVideo;
+    return [null, createdVideo];
   } catch (err) {
     console.error(err);
     logger.error(`Error creating video data: ${err.message}`);
@@ -94,7 +94,8 @@ export const updateVideo = async payload => {
     const filter = { videoId };
     const options = { upsert: true };
     const update = { ...payload };
-    await Video.findOneAndUpdate(filter, update, options);
+    const updatedVideo = await Video.findOneAndUpdate(filter, update, options);
+    return [null, updatedVideo];
   } catch (err) {
     console.error(err);
     logger.error(`Error updating video data to db: ${err.message}`);
@@ -105,7 +106,8 @@ export const updateVideo = async payload => {
 export const updateVideoViews = async videoId => {
   try {
     const { Video } = models;
-    return await Video.findOneAndUpdate({ videoId }, { $inc: { views: 1 } });
+    const updatedVideo = await Video.findOneAndUpdate(filter, update, options);
+    return [null, updatedVideo];
   } catch (err) {
     console.error(err);
     logger.error(`Error updating video views: ${err.message}`);

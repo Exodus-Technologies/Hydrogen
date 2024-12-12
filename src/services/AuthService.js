@@ -25,7 +25,10 @@ exports.validateLogin = async (email, password) => {
     if (user) {
       const validPassword = user.getIsValidPassword(password);
       if (validPassword) {
-        const [err, updatedUser] = await updateLastLogin(user.userId);
+        const [error, updatedUser] = await updateLastLogin(user.userId);
+        if (error) {
+          return badRequest(error.message);
+        }
         const token = generateAuthorizationToken(user);
         return [
           HttpStatusCodes.OK,
@@ -61,7 +64,7 @@ exports.requestPasswordReset = async email => {
       deleteCode(userId);
     }
 
-    const [err, otpCode] = generateOTPCode();
+    const otpCode = generateOTPCode();
 
     await createOTPCode({ userId, email, otpCode });
 
@@ -82,7 +85,10 @@ exports.verifyOTP = async (email, otpCode) => {
   try {
     const [error, isVerified] = await verifyOTPCode(email, otpCode);
     if (isVerified) {
-      const [_, user] = await getUserByEmail(email);
+      const [error, user] = await getUserByEmail(email);
+      if (error) {
+        return badRequest(error.message);
+      }
       if (user) {
         const token = generateAuthorizationToken(user);
         return [

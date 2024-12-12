@@ -8,6 +8,8 @@ const { Schema, model } = mongoose;
 
 const autoIncrement = mongooseSequence(mongoose);
 
+//ROLE SCHEMA
+//  ============================================
 const roleSchema = new Schema({
   name: {
     type: String,
