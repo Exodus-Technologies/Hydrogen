@@ -7,7 +7,7 @@ import { isProductionEnvironment } from '../utilities/boolean';
 const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
-//Song SCHEMA
+//SONG SCHEMA
 //  ============================================
 const songSchema = new Schema(
   {

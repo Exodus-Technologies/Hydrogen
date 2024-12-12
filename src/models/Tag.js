@@ -7,7 +7,7 @@ import { isProductionEnvironment } from '../utilities/boolean';
 const { Schema, model } = mongoose;
 const autoIncrement = mongooseSequence(mongoose);
 
-//PERMISSION SCHEMA
+//TAG SCHEMA
 //  ============================================
 const tagSchema = new Schema(
   {

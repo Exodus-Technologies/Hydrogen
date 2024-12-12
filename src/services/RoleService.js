@@ -16,16 +16,14 @@ import {
 
 exports.getRoles = async query => {
   try {
-    const roles = await getRoles(query);
+    const [error, roles] = await getRoles(query);
     if (roles) {
       return [
         HttpStatusCodes.OK,
         { message: 'Roles fetched from db with success', roles }
       ];
     } else {
-      return badRequest(
-        `Unable to find roles that matched the search criteria.`
-      );
+      return badRequest(error.message);
     }
   } catch (err) {
     console.error(err);
@@ -36,14 +34,14 @@ exports.getRoles = async query => {
 
 exports.getRole = async roleId => {
   try {
-    const role = await getRole(roleId);
+    const [error, role] = await getRole(roleId);
     if (role) {
       return [
         HttpStatusCodes.OK,
         { message: 'Role fetched from db with success', role }
       ];
     } else {
-      return badRequest(`No role found with id provided.`);
+      return badRequest(error.message);
     }
   } catch (err) {
     console.error(err);

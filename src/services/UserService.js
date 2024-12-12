@@ -1,7 +1,13 @@
 'use strict';
 
 import logger from '../logger';
-import { createUser, getUsers, updateUser } from '../queries/users';
+import {
+  createUser,
+  deleteUser,
+  getUser,
+  getUsers,
+  updateUser
+} from '../queries/users';
 import {
   HttpStatusCodes,
   badRequest,
