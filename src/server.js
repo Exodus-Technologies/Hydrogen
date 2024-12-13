@@ -59,7 +59,7 @@ if (isProductionEnvironment()) {
   //Cors middleware
   server.use(
     cors({
-      origin: config.FRONT_END_APP_URL, // Replace with the origin of your frontend app
+      origin: config.FRONT_END_APP_ORIGIN_URL, // Replace with the origin of your frontend app
       credentials: true // Allow cookies and authentication headers
     })
   );
