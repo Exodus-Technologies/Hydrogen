@@ -10,6 +10,7 @@ const config = {
   HOST: process.env.HOST,
   PORT: process.env.PORT,
   APP_NAME: process.env.APP_NAME,
+  FRONT_END_APP_URL: process.env.FRONT_END_APP_URL,
   RATE_LIMIT_MS: +process.env.RATE_LIMIT_MS,
   RATE_LIMIT_MAX: +process.env.RATE_LIMIT_MAX,
   TRUST_PROXY: convertArgToBoolean(process.env.TRUST_PROXY),

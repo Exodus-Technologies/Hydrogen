@@ -57,7 +57,12 @@ if (isProductionEnvironment()) {
   logger.info('Proxy setting enabled.');
 
   //Cors middleware
-  server.use(cors());
+  server.use(
+    cors({
+      origin: config.FRONT_END_APP_URL, // Replace with the origin of your frontend app
+      credentials: true // Allow cookies and authentication headers
+    })
+  );
   logger.info('CORS enabled.');
 
   //Helmet middleware
