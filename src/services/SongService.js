@@ -8,17 +8,8 @@ import {
   getSongDistributionURI,
   getThumbnailDistributionURI
 } from '../aws';
-
 import logger from '../logger';
-import {
-  createSong,
-  deleteSong,
-  getSong,
-  getSongByTitle,
-  getSongs,
-  updateSong,
-  updateSongListens
-} from '../queries/songs.js';
+import { SongRepository } from '../repository';
 import {
   badRequest,
   HttpStatusCodes,
@@ -27,7 +18,7 @@ import {
 
 exports.getSongs = async query => {
   try {
-    const [error, songs] = await getSongs(query);
+    const [error, songs] = await SongRepository.getSongs(query);
     if (songs) {
       return [
         HttpStatusCodes.OK,
@@ -44,7 +35,7 @@ exports.getSongs = async query => {
 
 exports.getSong = async songId => {
   try {
-    const [error, song] = await getSong(songId);
+    const [error, song] = await SongRepository.getSong(songId);
     if (error) {
       return badRequest(error.message);
     }
@@ -73,7 +64,7 @@ exports.uploadSong = async archive => {
       duration
     } = archive;
 
-    const [error, song] = await getSongByTitle(title);
+    const [error, song] = await SongRepository.getSongByTitle(title);
 
     if (error) {
       return badRequest(error.message);
@@ -93,7 +84,7 @@ exports.uploadSong = async archive => {
         thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
       };
 
-      const song = await createSong(body);
+      const song = await SongRepository.createSong(body);
       if (song) {
         return [
           HttpStatusCodes.CREATED,
@@ -123,7 +114,7 @@ exports.updateSong = async payload => {
       duration
     } = payload;
 
-    const [error, song] = await getSong(songId);
+    const [error, song] = await SongRepository.getSong(songId);
 
     if (error) {
       return badRequest(error.message);
@@ -150,7 +141,7 @@ exports.updateSong = async payload => {
         duration,
         thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
       };
-      await updateSong(body);
+      await SongRepository.updateSong(body);
       deleteSongByKey(song.songKey);
       deleteThumbnailByKey(song.thumbnailKey);
       return [
@@ -173,7 +164,7 @@ exports.updateSong = async payload => {
 
 exports.updateListens = async songId => {
   try {
-    const [error, song] = await updateSongListens(songId);
+    const [error, song] = await SongRepository.updateSongListens(songId);
     if (error) {
       return badRequest(error.message);
     }
@@ -196,7 +187,7 @@ exports.updateListens = async songId => {
 
 exports.deleteSong = async songId => {
   try {
-    const [error, song] = await getSong(songId);
+    const [error, song] = await SongRepository.getSong(songId);
     if (error) {
       return badRequest(error.message);
     }
@@ -204,7 +195,7 @@ exports.deleteSong = async songId => {
       const { songKey, thumbnailKey } = song;
       deleteSongByKey(songKey);
       deleteThumbnailByKey(thumbnailKey);
-      const [error, deletedSong] = await deleteSong(songId);
+      const [error, deletedSong] = await SongRepository.deleteSong(songId);
       if (deletedSong) {
         return [HttpStatusCodes.NO_CONTENT];
       }

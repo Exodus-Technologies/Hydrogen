@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-export const getPermissions = async query => {
+exports.getPermissions = async query => {
   try {
     const { Permission } = models;
     const {
@@ -48,7 +48,7 @@ export const getPermissions = async query => {
   }
 };
 
-export const getPermission = async permissionId => {
+exports.getPermission = async permissionId => {
   try {
     const { Permission } = models;
     const permission = await Permission.findOne({ permissionId });
@@ -62,7 +62,7 @@ export const getPermission = async permissionId => {
   }
 };
 
-export const getPermissionByName = async name => {
+exports.getPermissionByName = async name => {
   try {
     const { Permission } = models;
     const permission = await Permission.findOne({ name });
@@ -76,7 +76,7 @@ export const getPermissionByName = async name => {
   }
 };
 
-export const createPermission = async payload => {
+exports.createPermission = async payload => {
   try {
     const { Permission } = models;
     const permission = await Permission.findOne({ name: payload.name });
@@ -93,7 +93,7 @@ export const createPermission = async payload => {
   }
 };
 
-export const updatePermission = async (permissionId, payload) => {
+exports.updatePermission = async (permissionId, payload) => {
   try {
     const { Permission } = models;
     const filter = { permissionId };
@@ -112,7 +112,7 @@ export const updatePermission = async (permissionId, payload) => {
   }
 };
 
-export const deletePermission = async permissionId => {
+exports.deletePermission = async permissionId => {
   try {
     const { Permission } = models;
     const deletedPermission = await Permission.deleteOne({ permissionId });

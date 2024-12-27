@@ -1,13 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import {
-  createUser,
-  deleteUser,
-  getUser,
-  getUsers,
-  updateUser
-} from '../queries/users';
+import { UserRepository } from '../repository';
 import {
   HttpStatusCodes,
   badRequest,
@@ -16,7 +10,7 @@ import {
 
 exports.getUsers = async query => {
   try {
-    const [error, users] = await getUsers(query);
+    const [error, users] = await UserRepository.getUsers(query);
     if (users) {
       return [
         HttpStatusCodes.OK,
@@ -37,7 +31,7 @@ exports.getUsers = async query => {
 
 exports.getUser = async userId => {
   try {
-    const [error, user] = await getUser(userId);
+    const [error, user] = await UserRepository.getUser(userId);
     if (user) {
       return [
         HttpStatusCodes.OK,
@@ -57,7 +51,7 @@ exports.getUser = async userId => {
 
 exports.createUser = async payload => {
   try {
-    const [error, user] = await createUser(payload);
+    const [error, user] = await UserRepository.createUser(payload);
     if (user) {
       return [
         HttpStatusCodes.CREATED,
@@ -78,7 +72,10 @@ exports.createUser = async payload => {
 
 exports.updateUser = async (userId, payload) => {
   try {
-    const [error, updatedUser] = await updateUser(userId, payload);
+    const [error, updatedUser] = await UserRepository.updateUser(
+      userId,
+      payload
+    );
     if (updatedUser) {
       return [
         HttpStatusCodes.OK,
@@ -95,9 +92,9 @@ exports.updateUser = async (userId, payload) => {
 
 exports.deleteUser = async userId => {
   try {
-    const [error, user] = await getUser(userId);
+    const [error, user] = await UserRepository.getUser(userId);
     if (user) {
-      const [error, deletedUser] = await deleteUser(userId);
+      const [error, deletedUser] = await UserRepository.deleteUser(userId);
       if (deletedUser) {
         return [HttpStatusCodes.NO_CONTENT];
       }

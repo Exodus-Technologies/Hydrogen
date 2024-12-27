@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-export const getTags = async query => {
+exports.getTags = async query => {
   try {
     const { Tag } = models;
     const {
@@ -46,7 +46,7 @@ export const getTags = async query => {
   }
 };
 
-export const getTag = async tagId => {
+exports.getTag = async tagId => {
   try {
     const { Tag } = models;
     const tag = await Tag.findOne({ tagId });
@@ -60,7 +60,7 @@ export const getTag = async tagId => {
   }
 };
 
-export const getTagByName = async name => {
+exports.getTagByName = async name => {
   try {
     const { Tag } = models;
     const tag = await Tag.findOne({ name });
@@ -72,17 +72,16 @@ export const getTagByName = async name => {
   }
 };
 
-export const createTag = async payload => {
+exports.createTag = async payload => {
   try {
     const { Tag } = models;
     const tag = await Tag.findOne({ name: payload.name });
     if (tag) {
       return [new Error('Tag with name already exists.')];
     }
-    const r = new Tag(payload);
-    const createdTag = await r.save();
-    const { description, name, tagId } = createdTag;
-    return [null, { description, name, tagId }];
+    const t = new Tag(payload);
+    const createdTag = await t.save();
+    return [null, createdTag];
   } catch (err) {
     console.error(err);
     logger.error(`Error saving tag data to db: ${err.message}`);
@@ -90,7 +89,7 @@ export const createTag = async payload => {
   }
 };
 
-export const updateTag = async (tagId, payload) => {
+exports.updateTag = async (tagId, payload) => {
   try {
     const { Tag } = models;
     const filter = { tagId };
@@ -105,7 +104,7 @@ export const updateTag = async (tagId, payload) => {
   }
 };
 
-export const deleteTag = async tagId => {
+exports.deleteTag = async tagId => {
   try {
     const { Tag } = models;
     const deletedTag = await Tag.deleteOne({ tagId });

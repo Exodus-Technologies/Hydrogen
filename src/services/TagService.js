@@ -1,13 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import {
-  createTags,
-  deleteTag,
-  getTag,
-  getTags,
-  updateTag
-} from '../queries/tags';
+import { TagRepository } from '../repository';
 import {
   HttpStatusCodes,
   badRequest,
@@ -16,7 +10,7 @@ import {
 
 exports.getTags = async query => {
   try {
-    const [error, tags] = await getTags(query);
+    const [error, tags] = await TagRepository.getTags(query);
     if (tags) {
       return [
         HttpStatusCodes.OK,
@@ -37,7 +31,7 @@ exports.getTags = async query => {
 
 exports.getTag = async tagId => {
   try {
-    const [error, tag] = await getTag(tagId);
+    const [error, tag] = await TagRepository.getTag(tagId);
     if (tag) {
       return [
         HttpStatusCodes.OK,
@@ -57,7 +51,7 @@ exports.getTag = async tagId => {
 
 exports.createTag = async payload => {
   try {
-    const [error, tag] = await createTags(payload);
+    const [error, tag] = await TagRepository.createTag(payload);
     if (tag) {
       return [
         HttpStatusCodes.CREATED,
@@ -78,7 +72,7 @@ exports.createTag = async payload => {
 
 exports.updateTag = async (tagId, payload) => {
   try {
-    const [error, updatedTags] = await updateTag(tagId, payload);
+    const [error, updatedTags] = await TagRepository.updateTag(tagId, payload);
     if (updatedTags) {
       return [
         HttpStatusCodes.OK,
@@ -95,9 +89,9 @@ exports.updateTag = async (tagId, payload) => {
 
 exports.deleteTag = async tagId => {
   try {
-    const [error, tag] = await getTagById(tagId);
+    const [error, tag] = await TagRepository.getTag(tagId);
     if (tag) {
-      const [error, deletedTags] = await deleteTag(tagId);
+      const [error, deletedTags] = await TagRepository.deleteTag(tagId);
       if (deletedTags) {
         return [HttpStatusCodes.NO_CONTENT];
       }

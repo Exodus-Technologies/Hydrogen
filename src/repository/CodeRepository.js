@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-export const getCode = async userId => {
+exports.getCode = async userId => {
   try {
     const { Code } = models;
     const code = await Code.findOne({ userId });
@@ -18,7 +18,7 @@ export const getCode = async userId => {
   }
 };
 
-export const createOTPCode = async payload => {
+exports.createOTPCode = async payload => {
   try {
     const { Code } = models;
     const { userId } = payload;
@@ -36,7 +36,7 @@ export const createOTPCode = async payload => {
   }
 };
 
-export const deleteCode = async userId => {
+exports.deleteCode = async userId => {
   try {
     const { Code } = models;
     const deletedCode = await Code.deleteOne({ userId });
@@ -51,7 +51,7 @@ export const deleteCode = async userId => {
   }
 };
 
-export const verifyOTPCode = async (email, otpCode) => {
+exports.verifyOTPCode = async (email, otpCode) => {
   try {
     const { Code } = models;
     const code = await Code.findOne({ email });

@@ -1,31 +1,23 @@
 'use strict';
 
 import logger from '../logger';
-import {
-  createOTPCode,
-  deleteCode,
-  getCode,
-  verifyOTPCode
-} from '../queries/code';
-import { getUserByEmail, updateLastLogin } from '../queries/users';
+import { CodeRepository, UserRepository } from '../repository';
 import {
   HttpStatusCodes,
   badRequest,
   internalServerErrorRequest
 } from '../response-codes';
-import {
-  generateAuthorizationToken,
-  generateOTPCode,
-  verifyJWTToken
-} from '../utilities/token';
+import { generateAuthorizationToken, verifyJWTToken } from '../utilities/token';
 
 exports.validateLogin = async (email, password) => {
   try {
-    const [error, user] = await getUserByEmail(email);
+    const [error, user] = await UserRepository.getUserByEmail(email);
     if (user) {
       const validPassword = user.getIsValidPassword(password);
       if (validPassword) {
-        const [error, updatedUser] = await updateLastLogin(user.userId);
+        const [error, updatedUser] = await UserRepository.updateLastLogin(
+          user.userId
+        );
         if (error) {
           return badRequest(error.message);
         }
@@ -51,22 +43,22 @@ exports.validateLogin = async (email, password) => {
 
 exports.requestPasswordReset = async email => {
   try {
-    const [error, user] = await getUserByEmail(email);
+    const [error, user] = await UserRepository.getUserByEmail(email);
     if (error || !user) {
       return badRequest(error.message);
     }
 
     const { userId } = user;
 
-    const [_, existingCode] = await getCode(userId);
+    const [_, existingCode] = await CodeRepository.getCode(userId);
 
     if (existingCode) {
-      deleteCode(userId);
+      CodeRepository.deleteCode(userId);
     }
 
-    const otpCode = generateOTPCode();
+    const otpCode = CodeRepository.generateOTPCode();
 
-    await createOTPCode({ userId, email, otpCode });
+    await CodeRepository.createOTPCode({ userId, email, otpCode });
 
     return [
       HttpStatusCodes.OK,
@@ -83,9 +75,12 @@ exports.requestPasswordReset = async email => {
 
 exports.verifyOTP = async (email, otpCode) => {
   try {
-    const [error, isVerified] = await verifyOTPCode(email, otpCode);
+    const [error, isVerified] = await CodeRepository.verifyOTPCode(
+      email,
+      otpCode
+    );
     if (isVerified) {
-      const [error, user] = await getUserByEmail(email);
+      const [error, user] = await UserRepository.getUserByEmail(email);
       if (error) {
         return badRequest(error.message);
       }
@@ -107,7 +102,7 @@ exports.verifyOTP = async (email, otpCode) => {
 
 exports.changePassword = async (email, token, newPassword) => {
   try {
-    const [error, user] = await getUserByEmail(email);
+    const [error, user] = await UserRepository.getUserByEmail(email);
 
     if (error || !user) {
       return badRequest(error.message);
@@ -119,7 +114,7 @@ exports.changePassword = async (email, token, newPassword) => {
       const updatedUser = await user.save();
       if (updatedUser) {
         const { userId } = updatedUser;
-        deleteCode(userId);
+        CodeRepository.deleteCode(userId);
         return [
           HttpStatusCodes.OK,
           {

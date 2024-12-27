@@ -3,7 +3,7 @@
 import rateLimit from 'express-rate-limit';
 import config from '../config';
 import logger from '../logger';
-import { getUserByEmail } from '../queries/users';
+import { UserRepository } from '../repository';
 import {
   HttpStatusCodes,
   forbiddenRequest,
@@ -93,7 +93,7 @@ const validateAuthorizationTokenHandler = async (req, res, next) => {
     }
 
     const { email } = result.data;
-    const [error, user] = await getUserByEmail(email);
+    const [error, user] = await UserRepository.getUserByEmail(email);
 
     if (!user || error) {
       const [statusCode, response] = forbiddenRequest('Token metadata invalid');
@@ -118,7 +118,7 @@ const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
   if (isDevelopmentEnvironment()) return next();
   try {
     const { email } = req.user;
-    const [error, user] = await getUserByEmail(email);
+    const [error, user] = await UserRepository.getUserByEmail(email);
 
     if (error) {
       const [statusCode, response] = forbiddenRequest(error.message);

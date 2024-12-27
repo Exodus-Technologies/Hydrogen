@@ -1,13 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import {
-  createPermission,
-  deletePermission,
-  getPermission,
-  getPermissions,
-  updatePermission
-} from '../queries/permissions';
+import { PermissionRepository } from '../repository';
 import {
   badRequest,
   HttpStatusCodes,
@@ -16,7 +10,9 @@ import {
 
 exports.getPermissions = async query => {
   try {
-    const [error, permissions] = await getPermissions(query);
+    const [error, permissions] = await PermissionRepository.getPermissions(
+      query
+    );
     if (permissions) {
       return [
         HttpStatusCodes.OK,
@@ -34,7 +30,9 @@ exports.getPermissions = async query => {
 
 exports.getPermission = async permissionId => {
   try {
-    const [error, permission] = await getPermission(permissionId);
+    const [error, permission] = await PermissionRepository.getPermission(
+      permissionId
+    );
     if (permission) {
       return [
         HttpStatusCodes.OK,
@@ -52,7 +50,9 @@ exports.getPermission = async permissionId => {
 
 exports.createPermission = async payload => {
   try {
-    const [error, permission] = await createPermission(payload);
+    const [error, permission] = await PermissionRepository.createPermission(
+      payload
+    );
     if (permission) {
       return [
         HttpStatusCodes.CREATED,
@@ -70,7 +70,10 @@ exports.createPermission = async payload => {
 
 exports.updatePermission = async (permissionId, payload) => {
   try {
-    const [error, permission] = await updatePermission(permissionId, payload);
+    const [error, permission] = await PermissionRepository.updatePermission(
+      permissionId,
+      payload
+    );
     if (permission) {
       return [
         HttpStatusCodes.OK,
@@ -88,7 +91,8 @@ exports.updatePermission = async (permissionId, payload) => {
 
 exports.deletePermission = async permissionId => {
   try {
-    const [error, deletedPermission] = await deletePermission(permissionId);
+    const [error, deletedPermission] =
+      await PermissionRepository.deletePermission(permissionId);
     if (deletedPermission) {
       return [HttpStatusCodes.NO_CONTENT];
     }

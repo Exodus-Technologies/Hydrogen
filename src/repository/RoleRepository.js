@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-export const getRoles = async query => {
+exports.getRoles = async query => {
   try {
     const { Role } = models;
     const {
@@ -46,7 +46,7 @@ export const getRoles = async query => {
   }
 };
 
-export const getRole = async roleId => {
+exports.getRole = async roleId => {
   try {
     const { Role } = models;
     const role = await Role.findOne({ roleId });
@@ -60,7 +60,7 @@ export const getRole = async roleId => {
   }
 };
 
-export const getRoleByName = async name => {
+exports.getRoleByName = async name => {
   try {
     const { Role } = models;
     const role = await Role.findOne({ name });
@@ -74,7 +74,7 @@ export const getRoleByName = async name => {
   }
 };
 
-export const createRole = async payload => {
+exports.createRole = async payload => {
   try {
     const { Role } = models;
     const role = await Role.findOne({ name: payload.name });
@@ -83,8 +83,7 @@ export const createRole = async payload => {
     }
     const r = new Role(payload);
     const createdRole = await r.save();
-    const { description, name, roleId } = createdRole;
-    return [null, { description, name, roleId }];
+    return [null, createdRole];
   } catch (err) {
     console.error(err);
     logger.error(`Error saving role data to db: ${err.message}`);
@@ -92,7 +91,7 @@ export const createRole = async payload => {
   }
 };
 
-export const updateRole = async (roleId, payload) => {
+exports.updateRole = async (roleId, payload) => {
   try {
     const { Role } = models;
     const filter = { roleId };
@@ -109,7 +108,7 @@ export const updateRole = async (roleId, payload) => {
   }
 };
 
-export const deleteRole = async roleId => {
+exports.deleteRole = async roleId => {
   try {
     const { Role } = models;
     const deletedRole = await Role.deleteOne({ roleId });

@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-export const getVideos = async query => {
+exports.getVideos = async query => {
   try {
     const { Video } = models;
     const {
@@ -46,7 +46,7 @@ export const getVideos = async query => {
   }
 };
 
-export const getVideoByTitle = async title => {
+exports.getVideoByTitle = async title => {
   try {
     const { Video } = models;
     const video = await Video.findOne({ title });
@@ -60,7 +60,7 @@ export const getVideoByTitle = async title => {
   }
 };
 
-export const getVideo = async videoId => {
+exports.getVideo = async videoId => {
   try {
     const { Video } = models;
     const video = await Video.findOne({ videoId });
@@ -74,7 +74,7 @@ export const getVideo = async videoId => {
   }
 };
 
-export const createVideo = async payload => {
+exports.createVideo = async payload => {
   try {
     const { Video } = models;
     const video = new Video(payload);
@@ -87,7 +87,7 @@ export const createVideo = async payload => {
   }
 };
 
-export const updateVideo = async payload => {
+exports.updateVideo = async payload => {
   try {
     const { Video } = models;
     const { videoId } = payload;
@@ -103,7 +103,7 @@ export const updateVideo = async payload => {
   }
 };
 
-export const updateVideoViews = async videoId => {
+exports.updateVideoViews = async videoId => {
   try {
     const { Video } = models;
     const updatedVideo = await Video.findOneAndUpdate(filter, update, options);
@@ -115,7 +115,7 @@ export const updateVideoViews = async videoId => {
   }
 };
 
-export const deleteVideo = async videoId => {
+exports.deleteVideo = async videoId => {
   try {
     const { Video } = models;
     const deletedVideo = await Video.deleteOne({ videoId });

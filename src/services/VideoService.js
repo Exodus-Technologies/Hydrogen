@@ -8,17 +8,8 @@ import {
   getThumbnailDistributionURI,
   getVideoDistributionURI
 } from '../aws';
-
 import logger from '../logger';
-import {
-  createVideo,
-  deleteVideo,
-  getVideo,
-  getVideoByTitle,
-  getVideos,
-  updateVideo,
-  updateVideoViews
-} from '../queries/videos.js';
+import { VideoRepository } from '../repository';
 import {
   badRequest,
   HttpStatusCodes,
@@ -27,7 +18,7 @@ import {
 
 exports.getVideos = async query => {
   try {
-    const [error, videos] = await getVideos(query);
+    const [error, videos] = await VideoRepository.getVideos(query);
     if (videos) {
       return [
         HttpStatusCodes.OK,
@@ -45,7 +36,7 @@ exports.getVideos = async query => {
 
 exports.getVideo = async videoId => {
   try {
-    const [error, video] = await getVideo(videoId);
+    const [error, video] = await VideoRepository.getVideo(videoId);
     if (video) {
       return [
         HttpStatusCodes.OK,
@@ -74,7 +65,7 @@ exports.uploadVideo = async archive => {
       duration
     } = archive;
 
-    const [error, video] = await getVideoByTitle(title);
+    const [error, video] = await VideoRepository.getVideoByTitle(title);
 
     if (error) {
       return badRequest(error.message);
@@ -94,7 +85,7 @@ exports.uploadVideo = async archive => {
         thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
       };
 
-      const [error, video] = await createVideo(body);
+      const [error, video] = await VideoRepository.createVideo(body);
       if (video) {
         return [
           HttpStatusCodes.CREATED,
@@ -125,7 +116,7 @@ exports.updateVideo = async payload => {
       duration
     } = payload;
 
-    const [error, video] = await getVideo(videoId);
+    const [error, video] = await VideoRepository.getVideo(videoId);
 
     if (error) {
       return badRequest(error.message);
@@ -150,7 +141,7 @@ exports.updateVideo = async payload => {
         duration,
         thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
       };
-      const [error, updatedVideo] = await updateVideo(body);
+      const [error, updatedVideo] = await VideoRepository.updateVideo(body);
       if (error) {
         return badRequest(error.message);
       }
@@ -175,7 +166,7 @@ exports.updateVideo = async payload => {
 
 exports.updateViews = async videoId => {
   try {
-    const [error, video] = await updateVideoViews(videoId);
+    const [error, video] = await VideoRepository.updateVideoViews(videoId);
     if (video) {
       const { views, title } = video;
       return [
@@ -198,7 +189,7 @@ exports.updateViews = async videoId => {
 
 exports.deleteVideo = async videoId => {
   try {
-    const [error, video] = await getVideo(videoId);
+    const [error, video] = await VideoRepository.getVideo(videoId);
     if (error) {
       return badRequest(error.message);
     }
@@ -206,7 +197,7 @@ exports.deleteVideo = async videoId => {
       const { videoKey, thumbnailKey } = video;
       deleteVideoByKey(videoKey);
       deleteThumbnailByKey(thumbnailKey);
-      const [error, deletedVideo] = await deleteVideo(videoId);
+      const [error, deletedVideo] = await VideoRepository.deleteVideo(videoId);
       if (deletedVideo) {
         return [HttpStatusCodes.NO_CONTENT];
       }

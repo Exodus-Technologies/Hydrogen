@@ -2,9 +2,9 @@
 
 import logger from '../logger';
 import models from '../models';
-import { getRoles } from './roles';
+import RoleRepository from './RoleRepository';
 
-export const getUsers = async query => {
+exports.getUsers = async query => {
   try {
     const { User } = models;
     const {
@@ -49,7 +49,7 @@ export const getUsers = async query => {
   }
 };
 
-export const getUser = async userId => {
+exports.getUser = async userId => {
   try {
     const { User } = models;
     const user = await User.findOne({ userId });
@@ -66,7 +66,7 @@ export const getUser = async userId => {
   }
 };
 
-export const getUserByEmail = async email => {
+exports.getUserByEmail = async email => {
   try {
     const { User } = models;
     const user = await User.findOne({ email });
@@ -81,12 +81,12 @@ export const getUserByEmail = async email => {
   }
 };
 
-export const createUser = async body => {
+exports.createUser = async body => {
   try {
     const { User } = models;
     const { email, role } = body;
 
-    const roles = await getRoles({});
+    const roles = await RoleRepository.getRoles({});
     const validRoles = roles.map(role => role.value);
 
     if (!validRoles.includes(role)) {
@@ -104,11 +104,11 @@ export const createUser = async body => {
   } catch (err) {
     console.error(err);
     logger.error(`Error creating user data: ${err.message}`);
-    return [new Error('Unable to create user db.')];
+    return [new Error('Unable to create user in db.')];
   }
 };
 
-export const updateUser = async (userId, payload) => {
+exports.updateUser = async (userId, payload) => {
   try {
     const { User } = models;
     const { email } = payload;
@@ -134,7 +134,7 @@ export const updateUser = async (userId, payload) => {
   }
 };
 
-export const updateLastLogin = async userId => {
+exports.updateLastLogin = async userId => {
   const { User } = models;
   try {
     const filter = { userId };
@@ -151,7 +151,7 @@ export const updateLastLogin = async userId => {
   }
 };
 
-export const deleteUser = async userId => {
+exports.deleteUser = async userId => {
   try {
     const { User } = models;
     const deletedUser = await User.deleteOne({ userId });

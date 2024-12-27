@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-export const getSongs = async query => {
+exports.getSongs = async query => {
   try {
     const { Song } = models;
     const {
@@ -46,7 +46,7 @@ export const getSongs = async query => {
   }
 };
 
-export const getSongByTitle = async title => {
+exports.getSongByTitle = async title => {
   try {
     const { Song } = models;
     const song = await Song.findOne({ title });
@@ -60,7 +60,7 @@ export const getSongByTitle = async title => {
   }
 };
 
-export const getSong = async songId => {
+exports.getSong = async songId => {
   try {
     const { Song } = models;
     const song = await Song.findOne({ songId });
@@ -74,7 +74,7 @@ export const getSong = async songId => {
   }
 };
 
-export const createSong = async payload => {
+exports.createSong = async payload => {
   try {
     const { Song } = models;
     const song = new Song(payload);
@@ -87,7 +87,7 @@ export const createSong = async payload => {
   }
 };
 
-export const updateSong = async payload => {
+exports.updateSong = async payload => {
   try {
     const { Song } = models;
     const { songId } = payload;
@@ -103,7 +103,7 @@ export const updateSong = async payload => {
   }
 };
 
-export const updateSongListens = async songId => {
+exports.updateSongListens = async songId => {
   try {
     const { Song } = models;
     const updatedSong = await Song.findOneAndUpdate(
@@ -118,7 +118,7 @@ export const updateSongListens = async songId => {
   }
 };
 
-export const deleteSong = async songId => {
+exports.deleteSong = async songId => {
   try {
     const { Song } = models;
     const deletedSong = await Song.deleteOne({ songId });

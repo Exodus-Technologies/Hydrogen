@@ -1,13 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import {
-  createRole,
-  deleteRole,
-  getRole,
-  getRoles,
-  updateRole
-} from '../queries/roles';
+import { RoleRepository } from '../repository';
 import {
   HttpStatusCodes,
   badRequest,
@@ -16,7 +10,7 @@ import {
 
 exports.getRoles = async query => {
   try {
-    const [error, roles] = await getRoles(query);
+    const [error, roles] = await RoleRepository.getRoles(query);
     if (roles) {
       return [
         HttpStatusCodes.OK,
@@ -34,7 +28,7 @@ exports.getRoles = async query => {
 
 exports.getRole = async roleId => {
   try {
-    const [error, role] = await getRole(roleId);
+    const [error, role] = await RoleRepository.getRole(roleId);
     if (role) {
       return [
         HttpStatusCodes.OK,
@@ -54,7 +48,7 @@ exports.getRole = async roleId => {
 
 exports.createRole = async payload => {
   try {
-    const [error, role] = await createRole(payload);
+    const [error, role] = await RoleRepository.createRole(payload);
     if (role) {
       return [
         HttpStatusCodes.CREATED,
@@ -72,7 +66,7 @@ exports.createRole = async payload => {
 
 exports.updateRole = async (roleId, name) => {
   try {
-    const [error, role] = await updateRole(roleId, name);
+    const [error, role] = await RoleRepository.updateRole(roleId, name);
     if (role) {
       return [
         HttpStatusCodes.OK,
@@ -90,7 +84,7 @@ exports.updateRole = async (roleId, name) => {
 
 exports.deleteRole = async roleId => {
   try {
-    const [error, deletedRole] = await deleteRole(roleId);
+    const [error, deletedRole] = await RoleRepository.deleteRole(roleId);
     if (deletedRole) {
       return [HttpStatusCodes.NO_CONTENT];
     }
