@@ -21,11 +21,11 @@ const videoSchema = new Schema(
       type: String,
       required: true
     },
-    videoKey: {
+    thumbnail: {
       type: String,
       required: true
     },
-    thumbnail: {
+    videoKey: {
       type: String,
       required: true
     },

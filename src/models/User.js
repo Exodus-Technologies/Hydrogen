@@ -33,12 +33,10 @@ const userSchema = new Schema(
     },
     zipCode: { type: String },
     role: { type: String, required: true },
-    permissions: [
-      {
-        type: String,
-        required: true
-      }
-    ],
+    permissions: {
+      type: [String],
+      required: true
+    },
     lastLoggedIn: {
       type: Date,
       default: Date.now()

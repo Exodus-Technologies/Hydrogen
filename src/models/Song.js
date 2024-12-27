@@ -21,15 +21,15 @@ const songSchema = new Schema(
       type: String,
       required: true
     },
+    coverImage: {
+      type: String,
+      required: true
+    },
     songKey: {
       type: String,
       required: true
     },
-    thumbnail: {
-      type: String,
-      required: true
-    },
-    thumbnailKey: {
+    coverImageKey: {
       type: String,
       required: true
     },
