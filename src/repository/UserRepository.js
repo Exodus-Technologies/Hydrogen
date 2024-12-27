@@ -86,7 +86,10 @@ exports.createUser = async body => {
     const { User } = models;
     const { email, role } = body;
 
-    const roles = await RoleRepository.getRoles({});
+    const [error, roles] = await RoleRepository.getRoles({});
+    if (error) {
+      return [new Error(error.message)];
+    }
     const validRoles = roles.map(role => role.value);
 
     if (!validRoles.includes(role)) {
@@ -98,7 +101,7 @@ exports.createUser = async body => {
       return [new Error('User with email already exists.')];
     }
 
-    const user = new User(payload);
+    const user = new User(body);
     const createdUser = await user.save();
     return [null, createdUser];
   } catch (err) {
@@ -111,11 +114,18 @@ exports.createUser = async body => {
 exports.updateUser = async (userId, payload) => {
   try {
     const { User } = models;
-    const { email } = payload;
-    const user = await User.findOne({ email });
-    if (user) {
-      return [new Error('Unable to change email. Email already in use.')];
+    const user = await User.findOne({ userId });
+    const { email: currentEmail } = user;
+    const { email: newEmail } = payload;
+
+    //Looks to see if new email does not existing in the database or conflicts with the existing email.
+    if (newEmail && newEmail !== currentEmail) {
+      const existingUser = await User.findOne({ email: newEmail });
+      if (existingUser) {
+        return [new Error('Unable to change email. Email already in use.')];
+      }
     }
+
     const filter = { userId };
     const options = { new: true };
     const update = { ...payload };
@@ -135,8 +145,8 @@ exports.updateUser = async (userId, payload) => {
 };
 
 exports.updateLastLogin = async userId => {
-  const { User } = models;
   try {
+    const { User } = models;
     const filter = { userId };
     const update = { lastLoggedIn: new Date() };
     const options = { new: true };

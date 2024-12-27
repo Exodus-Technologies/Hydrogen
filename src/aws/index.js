@@ -46,6 +46,9 @@ const s3Client = new S3Client({
  * Video helper functions
  */
 export const getVideoObjectKey = key => {
+  const extension = filename.split('.').pop();
+  const timestamp = Date.now();
+  `${timestamp}-${uuidv4()}.${extension}`;
   return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
 };
 

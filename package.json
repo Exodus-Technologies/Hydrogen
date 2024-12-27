@@ -35,6 +35,7 @@
     "nocache": "^4.0.0",
     "regenerator-runtime": "^0.13.9",
     "response-time": "^2.3.2",
+    "uuid": "^11.0.3",
     "winston": "^3.17.0"
   },
   "devDependencies": {
