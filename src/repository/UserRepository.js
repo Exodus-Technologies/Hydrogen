@@ -81,18 +81,29 @@ exports.getUserByEmail = async email => {
   }
 };
 
+exports.getIsEmailInUse = async (email, nextEmail) => {
+  try {
+    const { User } = models;
+    const user = await User.findOne({ email });
+    if (user) {
+      return [null, user];
+    }
+    return [new Error('Unable to find user with email provided.')];
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting user data from db by email: ${err.message}`);
+    return [new Error('No user found associated with email provided.')];
+  }
+};
+
 exports.createUser = async body => {
   try {
     const { User } = models;
     const { email, role } = body;
 
-    const [error, roles] = await RoleRepository.getRoles({});
-    if (error) {
-      return [new Error(error.message)];
-    }
-    const validRoles = roles.map(role => role.value);
+    const isValidRole = RoleRepository.getIsValidRole(role);
 
-    if (!validRoles.includes(role)) {
+    if (!isValidRole) {
       return [new Error('Role provided does not exist.')];
     }
 
@@ -115,20 +126,24 @@ exports.updateUser = async (userId, payload) => {
   try {
     const { User } = models;
     const user = await User.findOne({ userId });
-    const { email: currentEmail } = user;
-    const { email: newEmail } = payload;
 
     //Looks to see if new email does not existing in the database or conflicts with the existing email.
-    if (newEmail && newEmail !== currentEmail) {
-      const existingUser = await User.findOne({ email: newEmail });
+    if (payload.email && payload.email !== user.email) {
+      const existingUser = await User.findOne({ email: payload.email });
       if (existingUser) {
         return [new Error('Unable to change email. Email already in use.')];
       }
     }
 
+    const isValidRole = RoleRepository.getIsValidRole(payload.role);
+
+    if (!isValidRole) {
+      return [new Error('Role provided does not exist.')];
+    }
+
     const filter = { userId };
-    const options = { new: true };
     const update = { ...payload };
+    const options = { upsert: true, new: true };
     const updatedUser = await User.findOneAndUpdate(filter, update, options);
     if (updatedUser) {
       return [null, updatedUser];
@@ -149,7 +164,7 @@ exports.updateLastLogin = async userId => {
     const { User } = models;
     const filter = { userId };
     const update = { lastLoggedIn: new Date() };
-    const options = { new: true };
+    const options = { upsert: true, new: true };
     const user = await User.findOneAndUpdate(filter, update, options);
     return [null, user];
   } catch (err) {

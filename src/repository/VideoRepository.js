@@ -92,7 +92,7 @@ exports.updateVideo = async payload => {
     const { Video } = models;
     const { videoId } = payload;
     const filter = { videoId };
-    const options = { upsert: true };
+    const options = { upsert: true, new: true };
     const update = { ...payload };
     const updatedVideo = await Video.findOneAndUpdate(filter, update, options);
     return [null, updatedVideo];
@@ -106,6 +106,9 @@ exports.updateVideo = async payload => {
 exports.updateVideoViews = async videoId => {
   try {
     const { Video } = models;
+    const filter = { videoId };
+    const update = { $inc: { views: 1 } };
+    const options = { upsert: true, new: true };
     const updatedVideo = await Video.findOneAndUpdate(filter, update, options);
     return [null, updatedVideo];
   } catch (err) {

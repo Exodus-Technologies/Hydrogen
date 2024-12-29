@@ -92,7 +92,7 @@ exports.updateSong = async payload => {
     const { Song } = models;
     const { songId } = payload;
     const filter = { songId };
-    const options = { upsert: true };
+    const options = { upsert: true, new: true };
     const update = { ...payload };
     const updatedSong = await Song.findOneAndUpdate(filter, update, options);
     return [null, updatedSong];
@@ -106,10 +106,10 @@ exports.updateSong = async payload => {
 exports.updateSongListens = async songId => {
   try {
     const { Song } = models;
-    const updatedSong = await Song.findOneAndUpdate(
-      { songId },
-      { $inc: { listens: 1 } }
-    );
+    const filter = { songId };
+    const update = { $inc: { listens: 1 } };
+    const options = { upsert: true, new: true };
+    const updatedSong = await Song.findOneAndUpdate(filter, update, options);
     return [null, updatedSong];
   } catch (err) {
     console.error(err);

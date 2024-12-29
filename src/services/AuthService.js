@@ -7,7 +7,11 @@ import {
   badRequest,
   internalServerErrorRequest
 } from '../response-codes';
-import { generateAuthorizationToken, verifyJWTToken } from '../utilities/token';
+import {
+  generateAuthorizationToken,
+  generateOTPCode,
+  verifyJWTToken
+} from '../utilities/token';
 
 exports.validateLogin = async (email, password) => {
   try {
@@ -56,7 +60,7 @@ exports.requestPasswordReset = async email => {
       CodeRepository.deleteCode(userId);
     }
 
-    const otpCode = CodeRepository.generateOTPCode();
+    const otpCode = generateOTPCode();
 
     await CodeRepository.createOTPCode({ userId, email, otpCode });
 
@@ -111,10 +115,14 @@ exports.changePassword = async (email, token, newPassword) => {
     const isVerified = verifyJWTToken(token);
     if (isVerified) {
       user.password = newPassword;
-      const updatedUser = await user.save();
-      if (updatedUser) {
-        const { userId } = updatedUser;
-        CodeRepository.deleteCode(userId);
+      const [error, updatedUser] = await UserRepository.updatedUser(
+        user.userId,
+        user
+      );
+      if (error) {
+        return badRequest(error.message);
+      } else if (updatedUser) {
+        CodeRepository.deleteCode(updatedUser.userId);
         return [
           HttpStatusCodes.OK,
           {

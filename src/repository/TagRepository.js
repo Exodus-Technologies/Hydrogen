@@ -93,7 +93,7 @@ exports.updateTag = async (tagId, payload) => {
   try {
     const { Tag } = models;
     const filter = { tagId };
-    const options = { new: true };
+    const options = { upsert: true, new: true };
     const update = { ...payload };
     const tag = await Tag.findOneAndUpdate(filter, update, options);
     return [null, tag];

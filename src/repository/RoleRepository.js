@@ -74,6 +74,24 @@ exports.getRoleByName = async name => {
   }
 };
 
+exports.getIsValidRole = async role => {
+  try {
+    const { Role } = models;
+    const roles = await Role.find({});
+
+    const validRoles = roles.map(role => role.value);
+
+    if (!validRoles.includes(role)) {
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error validating role: ${err.message}`);
+    return false;
+  }
+};
+
 exports.createRole = async payload => {
   try {
     const { Role } = models;
@@ -95,7 +113,7 @@ exports.updateRole = async (roleId, payload) => {
   try {
     const { Role } = models;
     const filter = { roleId };
-    const options = { new: true };
+    const options = { upsert: true, new: true };
     const update = { ...payload };
     const role = await Role.findOneAndUpdate(filter, update, options);
     return [null, role];

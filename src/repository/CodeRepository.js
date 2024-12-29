@@ -18,6 +18,21 @@ exports.getCode = async userId => {
   }
 };
 
+exports.verifyOTPCode = async (email, otpCode) => {
+  try {
+    const { Code } = models;
+    const code = await Code.findOne({ email });
+    if (code.otpCode === otpCode) {
+      return [null, true];
+    }
+    return [new Error('Unable to find code to verify.')];
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error verifying otpCode: ${otpCode}: `, err);
+    return [new Error('Unable to verify code')];
+  }
+};
+
 exports.createOTPCode = async payload => {
   try {
     const { Code } = models;
@@ -48,20 +63,5 @@ exports.deleteCode = async userId => {
     console.error(err);
     logger.error(`Error deleting code data from db: ${err.message}`);
     return [new Error('Unable to find code to delete details.')];
-  }
-};
-
-exports.verifyOTPCode = async (email, otpCode) => {
-  try {
-    const { Code } = models;
-    const code = await Code.findOne({ email });
-    if (code.otpCode === otpCode) {
-      return [null, true];
-    }
-    return [new Error('Unable to find code to verify.')];
-  } catch (err) {
-    console.error(err);
-    logger.error(`Error verifying otpCode: ${otpCode}: `, err);
-    return [new Error('Unable to verify code')];
   }
 };

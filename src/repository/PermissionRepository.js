@@ -97,7 +97,7 @@ exports.updatePermission = async (permissionId, payload) => {
   try {
     const { Permission } = models;
     const filter = { permissionId };
-    const options = { new: true };
+    const options = { upsert: true, new: true };
     const update = { ...payload };
     const permission = await Permission.findOneAndUpdate(
       filter,
