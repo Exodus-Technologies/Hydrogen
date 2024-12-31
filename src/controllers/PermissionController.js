@@ -15,8 +15,8 @@ exports.getPermissions = async (req, res, next) => {
 };
 
 exports.getPermission = async (req, res, next) => {
-  const { permissionId } = req.params;
   try {
+    const { permissionId } = req.params;
     const [statusCode, response] = await PermissionService.getPermission(
       permissionId
     );
@@ -58,8 +58,8 @@ exports.updatePermission = async (req, res, next) => {
 };
 
 exports.deletePermission = async (req, res, next) => {
-  const { permissionId } = req.params;
   try {
+    const { permissionId } = req.params;
     const [statusCode, response] = await PermissionService.deletePermission(
       permissionId
     );

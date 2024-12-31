@@ -15,8 +15,8 @@ exports.getTags = async (req, res, next) => {
 };
 
 exports.getTag = async (req, res, next) => {
-  const { tagId } = req.params;
   try {
+    const { tagId } = req.params;
     const [statusCode, response] = await TagService.getTag(tagId);
     res.status(statusCode).send(response);
   } catch (err) {
@@ -51,8 +51,8 @@ exports.updateTag = async (req, res, next) => {
 };
 
 exports.deleteTag = async (req, res, next) => {
-  const { tagId } = req.params;
   try {
+    const { tagId } = req.params;
     const [statusCode, response] = await TagService.deleteTag(tagId);
     res.status(statusCode).send(response);
   } catch (err) {

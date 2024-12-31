@@ -15,8 +15,8 @@ exports.getVideos = async (req, res, next) => {
 };
 
 exports.getVideo = async (req, res, next) => {
-  const { videoId } = req.params;
   try {
+    const { videoId } = req.params;
     const [statusCode, response] = await VideoService.getVideo(videoId);
     res.status(statusCode).send(response);
   } catch (err) {

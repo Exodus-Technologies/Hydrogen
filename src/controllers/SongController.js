@@ -15,8 +15,8 @@ exports.getSongs = async (req, res, next) => {
 };
 
 exports.getSong = async (req, res, next) => {
-  const { songId } = req.params;
   try {
+    const { songId } = req.params;
     const [statusCode, response] = await SongService.getSong(songId);
     res.status(statusCode).send(response);
   } catch (err) {

@@ -15,8 +15,8 @@ exports.getRoles = async (req, res, next) => {
 };
 
 exports.getRole = async (req, res, next) => {
-  const { roleId } = req.params;
   try {
+    const { roleId } = req.params;
     const [statusCode, response] = await RoleService.getRole(roleId);
     res.status(statusCode).send(response);
   } catch (err) {
@@ -51,8 +51,8 @@ exports.updateRole = async (req, res, next) => {
 };
 
 exports.deleteRole = async (req, res, next) => {
-  const { roleId } = req.params;
   try {
+    const { roleId } = req.params;
     const [statusCode, response] = await RoleService.deleteRole(roleId);
     res.status(statusCode).send(response);
   } catch (err) {
