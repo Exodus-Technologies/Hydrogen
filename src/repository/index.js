@@ -1,3 +1,4 @@
+import AwsRepository from './AwsRepository';
 import CodeRepository from './CodeRepository';
 import PermissionRepository from './PermissionRepository';
 import RoleRepository from './RoleRepository';
@@ -7,6 +8,7 @@ import UserRepository from './UserRepository';
 import VideoRepository from './VideoRepository';
 
 export {
+  AwsRepository,
   CodeRepository,
   PermissionRepository,
   RoleRepository,

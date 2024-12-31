@@ -1,15 +1,7 @@
 'use strict';
 
-import {
-  copyThumbnailObject,
-  copyVideoObject,
-  deleteThumbnailByKey,
-  deleteVideoByKey,
-  getThumbnailDistributionURI,
-  getVideoDistributionURI
-} from '../aws';
 import logger from '../logger';
-import { VideoRepository } from '../repository';
+import { AwsRepository, VideoRepository } from '../repository';
 import {
   badRequest,
   HttpStatusCodes,
@@ -79,10 +71,11 @@ exports.uploadVideo = async archive => {
         ...(tags && {
           tags: tags.split(',').map(item => item.trim())
         }),
-        url: getVideoDistributionURI(videoKey) || url,
+        url: AwsRepository.getVideoDistributionURI(videoKey) || url,
         thumbnailKey,
         duration,
-        thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
+        thumbnail:
+          AwsRepository.getThumbnailDistributionURI(thumbnailKey) || thumbnail
       };
 
       const [error, video] = await VideoRepository.createVideo(body);
@@ -122,10 +115,23 @@ exports.updateVideo = async payload => {
       return badRequest(error.message);
     } else if (video) {
       if (videoKey !== video.videoKey) {
-        await copyVideoObject(video.videoKey, videoKey);
+        const isVideoBucketAvailable =
+          await AwsRepository.getIsVideoBucketAvailable();
+        if (!isVideoBucketAvailable) {
+          await AwsRepository.createVideoBucket();
+        }
+        await AwsRepository.copyVideoObject(video.videoKey, videoKey);
       }
       if (thumbnailKey !== video.thumbnailKey) {
-        await copyThumbnailObject(video.thumbnailKey, thumbnailKey);
+        const isThumbnailBucketAvailable =
+          await AwsRepository.getIsThumbnailBucketAvailable();
+        if (!isThumbnailBucketAvailable) {
+          await AwsRepository.createVideoBucket();
+        }
+        await AwsRepository.copyThumbnailObject(
+          video.thumbnailKey,
+          thumbnailKey
+        );
       }
 
       const body = {
@@ -136,17 +142,26 @@ exports.updateVideo = async payload => {
         ...(tags && {
           tags: tags.split(',').map(item => item.trim())
         }),
-        url: getVideoDistributionURI(videoKey) || url,
+        url: AwsRepository.getVideoDistributionURI(videoKey) || url,
         thumbnailKey,
         duration,
-        thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
+        thumbnail:
+          AwsRepository.getThumbnailDistributionURI(thumbnailKey) || thumbnail
       };
       const [error, updatedVideo] = await VideoRepository.updateVideo(body);
       if (error) {
         return badRequest(error.message);
       }
-      deleteVideoByKey(video.videoKey);
-      deleteThumbnailByKey(video.thumbnailKey);
+      const isVideoObjectAvailable =
+        await AwsRepository.getIsVideoObjectAvailable(videoKey);
+      if (isVideoObjectAvailable) {
+        AwsRepository.deleteVideoByKey(video.videoKey);
+      }
+      const isThumnbnailObjectAvailable =
+        await AwsRepository.getIsThumbnailObjectAvailable();
+      if (isThumnbnailObjectAvailable) {
+        AwsRepository.deleteThumbnailByKey(video.thumbnailKey);
+      }
       return [
         HttpStatusCodes.OK,
         {
@@ -195,8 +210,16 @@ exports.deleteVideo = async videoId => {
     }
     if (video) {
       const { videoKey, thumbnailKey } = video;
-      deleteVideoByKey(videoKey);
-      deleteThumbnailByKey(thumbnailKey);
+      const isVideoObjectAvailable =
+        await AwsRepository.getIsVideoObjectAvailable(videoKey);
+      if (isVideoObjectAvailable) {
+        AwsRepository.deleteVideoByKey(videoKey);
+      }
+      const isThumnbnailObjectAvailable =
+        await AwsRepository.getIsThumbnailObjectAvailable();
+      if (isThumnbnailObjectAvailable) {
+        AwsRepository.deleteThumbnailByKey(thumbnailKey);
+      }
       const [error, deletedVideo] = await VideoRepository.deleteVideo(videoId);
       if (deletedVideo) {
         return [HttpStatusCodes.NO_CONTENT];

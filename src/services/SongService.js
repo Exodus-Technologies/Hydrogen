@@ -1,15 +1,7 @@
 'use strict';
 
-import {
-  copySongObject,
-  copyThumbnailObject,
-  deleteSongByKey,
-  deleteThumbnailByKey,
-  getSongDistributionURI,
-  getThumbnailDistributionURI
-} from '../aws';
 import logger from '../logger';
-import { SongRepository } from '../repository';
+import { AwsRepository, SongRepository } from '../repository';
 import {
   badRequest,
   HttpStatusCodes,
@@ -58,8 +50,8 @@ exports.uploadSong = async archive => {
       description,
       url,
       songKey,
-      thumbnail,
-      thumbnailKey,
+      coverImage,
+      coverImageKey,
       tags,
       duration
     } = archive;
@@ -78,10 +70,12 @@ exports.uploadSong = async archive => {
         ...(tags && {
           tags: tags.split(',').map(item => item.trim())
         }),
-        url: getSongDistributionURI(songKey) || url,
-        thumbnailKey,
+        url: AwsRepository.getSongDistributionURI(songKey) || url,
+        coverImageKey,
         duration,
-        thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
+        coverImage:
+          AwsRepository.getCoverImageDistributionURI(coverImageKey) ||
+          coverImage
       };
 
       const song = await SongRepository.createSong(body);
@@ -107,8 +101,8 @@ exports.updateSong = async payload => {
       description,
       url,
       songKey,
-      thumbnail,
-      thumbnailKey,
+      coverImage,
+      coverImageKey,
       tags,
       songId,
       duration
@@ -122,10 +116,23 @@ exports.updateSong = async payload => {
 
     if (song) {
       if (songKey !== song.songKey) {
-        await copySongObject(song.songKey, songKey);
+        const isSongBucketAvaiable =
+          await AwsRepository.getIsSongBucketAvailable();
+        if (!isSongBucketAvaiable) {
+          await AwsRepository.createSongBucket();
+        }
+        await AwsRepository.copySongObject(song.songKey, songKey);
       }
-      if (thumbnailKey !== song.thumbnailKey) {
-        await copyThumbnailObject(song.thumbnailKey, thumbnailKey);
+      if (coverImageKey !== song.coverImageKey) {
+        const isCoverImageBucketAvailable =
+          await AwsRepository.getIsCoverImageBucketAvailable();
+        if (!isCoverImageBucketAvailable) {
+          await AwsRepository.createCoverImageBucket();
+        }
+        await AwsRepository.copyCoverImageObject(
+          song.coverImageKey,
+          coverImageKey
+        );
       }
 
       const body = {
@@ -136,14 +143,25 @@ exports.updateSong = async payload => {
         ...(tags && {
           tags: tags.split(',').map(item => item.trim())
         }),
-        url: getSongDistributionURI(songKey) || url,
-        thumbnailKey,
+        url: AwsRepository.getSongDistributionURI(songKey) || url,
+        coverImageKey,
         duration,
-        thumbnail: getThumbnailDistributionURI(thumbnailKey) || thumbnail
+        coverImage:
+          AwsRepository.getCoverImageDistributionURI(coverImageKey) ||
+          coverImage
       };
       await SongRepository.updateSong(body);
-      deleteSongByKey(song.songKey);
-      deleteThumbnailByKey(song.thumbnailKey);
+      const isSongObjectAvaiable = await AwsRepository.getIsSongObjectAvailable(
+        song.songKey
+      );
+      if (isSongObjectAvaiable) {
+        AwsRepository.deleteVideoByKey(song.songKey);
+      }
+      const isCoverImageObjectAvailable =
+        await AwsRepository.getIsCoverImageObjectAvailable(song.coverImageKey);
+      if (isCoverImageObjectAvailable) {
+        AwsRepository.deleteCoverImageByKey(song.coverImageKey);
+      }
       return [
         HttpStatusCodes.OK,
         {
@@ -192,9 +210,18 @@ exports.deleteSong = async songId => {
       return badRequest(error.message);
     }
     if (song) {
-      const { songKey, thumbnailKey } = song;
-      deleteSongByKey(songKey);
-      deleteThumbnailByKey(thumbnailKey);
+      const { songKey, coverImageKey } = song;
+      const isSongObjectAvaiable = await AwsRepository.getIsSongObjectAvailable(
+        songKey
+      );
+      if (isSongObjectAvaiable) {
+        AwsRepository.deleteVideoByKey(songKey);
+      }
+      const isCoverImageObjectAvailable =
+        await AwsRepository.getIsCoverImageObjectAvailable();
+      if (isCoverImageObjectAvailable) {
+        AwsRepository.deleteCoverImageByKey(coverImageKey);
+      }
       const [error, deletedSong] = await SongRepository.deleteSong(songId);
       if (deletedSong) {
         return [HttpStatusCodes.NO_CONTENT];
