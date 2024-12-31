@@ -73,7 +73,7 @@ const validateAuthorizationTokenHandler = async (req, res, next) => {
   //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MD......
   const tokenParts = authorizationHeader.split(' ');
 
-  if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+  if (tokenParts.length !== 2 || tokenParts[0].startsWith('Bearer ')) {
     const [statusCode, response] = unauthorizedRequest(
       'Invalid authorization format'
     );
@@ -127,11 +127,11 @@ const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
 
     const { permissions } = user;
 
-    const isAllowed = requiredPermissions.every(perm =>
-      permissions.includes(perm)
+    const isUserAllowed = requiredPermissions.every(permission =>
+      permissions.includes(permission)
     );
 
-    if (!isAllowed) {
+    if (!isUserAllowed) {
       const [statusCode, response] = forbiddenRequest(
         'User not authorized to perform action.'
       );
@@ -143,11 +143,10 @@ const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
     next();
   } catch (err) {
     console.error(err);
-    const [statusCode, response] = internalServerErrorRequest(
-      isProductionEnvironment()
-        ? getStatusMessage(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-        : err.message
-    );
+    const message = isProductionEnvironment()
+      ? getStatusMessage(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      : err.message;
+    const [statusCode, response] = internalServerErrorRequest(message);
     return res.status(statusCode).send(response);
   }
 };
