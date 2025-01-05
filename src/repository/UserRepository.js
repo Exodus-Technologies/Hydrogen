@@ -4,6 +4,21 @@ import logger from '../logger';
 import models from '../models';
 import RoleRepository from './RoleRepository';
 
+const getIsEmailInUse = async email => {
+  try {
+    const { User } = models;
+    const user = await User.findOne({ email });
+    if (user) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting user data from db by email: ${err.message}`);
+    return false;
+  }
+};
+
 exports.getUsers = async query => {
   try {
     const { User } = models;
@@ -81,21 +96,6 @@ exports.getUserByEmail = async email => {
   }
 };
 
-exports.getIsEmailInUse = async (email, nextEmail) => {
-  try {
-    const { User } = models;
-    const user = await User.findOne({ email });
-    if (user) {
-      return [null, user];
-    }
-    return [new Error('Unable to find user with email provided.')];
-  } catch (err) {
-    console.error(err);
-    logger.error(`Error getting user data from db by email: ${err.message}`);
-    return [new Error('No user found associated with email provided.')];
-  }
-};
-
 exports.createUser = async body => {
   try {
     const { User } = models;
@@ -107,7 +107,7 @@ exports.createUser = async body => {
       return [new Error('Role provided does not exist.')];
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await getIsEmailInUse(email);
     if (existingUser) {
       return [new Error('User with email already exists.')];
     }
@@ -129,7 +129,7 @@ exports.updateUser = async (userId, payload) => {
 
     //Looks to see if new email does not existing in the database or conflicts with the existing email.
     if (payload.email && payload.email !== user.email) {
-      const existingUser = await User.findOne({ email: payload.email });
+      const existingUser = await getIsEmailInUse(payload.email);
       if (existingUser) {
         return [new Error('Unable to change email. Email already in use.')];
       }

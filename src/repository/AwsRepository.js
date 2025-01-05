@@ -48,32 +48,30 @@ const s3Client = new S3Client({
 /**
  * Video helper functions
  */
-exports.getVideoObjectKey = key => {
+const getVideoObjectKey = key => {
   return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
 };
 
-exports.getThumbnailObjectKey = key => {
+const getThumbnailObjectKey = key => {
   return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
 };
 
-const getS3VideoParams = (key = '') => {
-  const params = {
-    Bucket: s3VideoBucketName
+const getS3VideoParams = key => {
+  return {
+    Bucket: s3VideoBucketName,
+    ...(key && {
+      Key: getVideoObjectKey(key)
+    })
   };
-  if (key) {
-    params.Key = getVideoObjectKey(key);
-  }
-  return params;
 };
 
-const getS3ThumbnailParams = (key = '') => {
-  const params = {
-    Bucket: s3ThumbnailBucketName
+const getS3ThumbnailParams = key => {
+  return {
+    Bucket: s3ThumbnailBucketName,
+    ...(key && {
+      Key: getThumbnailObjectKey(key)
+    })
   };
-  if (key) {
-    params.Key = getThumbnailObjectKey(key);
-  }
-  return params;
 };
 
 exports.getVideoDistributionURI = key => {
@@ -86,10 +84,12 @@ exports.getThumbnailDistributionURI = key => {
 
 exports.getIsVideoBucketAvailable = async () => {
   try {
-    const command = new HeadBucketCommand({ Bucket: s3VideoBucketName });
+    const params = getS3VideoParams();
+    const command = new HeadBucketCommand(params);
     await s3Client.send(command);
     return true; // Bucket exists and is accessible
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'getIsVideoBucketAvailable',
@@ -103,10 +103,12 @@ exports.getIsVideoBucketAvailable = async () => {
 
 exports.getIsThumbnailBucketAvailable = async () => {
   try {
-    const command = new HeadBucketCommand({ Bucket: s3ThumbnailBucketName });
+    const params = getS3ThumbnailParams();
+    const command = new HeadBucketCommand(params);
     await s3Client.send(command);
     return true; // Bucket exists and is accessible
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'getIsThumbnailBucketAvailable',
@@ -120,10 +122,12 @@ exports.getIsThumbnailBucketAvailable = async () => {
 
 exports.createVideoBucket = async () => {
   try {
-    const command = new CreateBucketCommand({ Bucket: s3VideoBucketName });
+    const params = getS3VideoParams();
+    const command = new CreateBucketCommand(params);
     await s3Client.send(command);
     return `Bucket "${s3VideoBucketName}" has been created successfully.`;
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'createVideoBucket',
@@ -131,16 +135,17 @@ exports.createVideoBucket = async () => {
       cfId,
       extendedRequestId
     });
-    return false;
   }
 };
 
 exports.createThumbnailBucket = async () => {
   try {
-    const command = new CreateBucketCommand({ Bucket: s3ThumbnailBucketName });
+    const params = getS3ThumbnailParams();
+    const command = new CreateBucketCommand(params);
     await s3Client.send(command);
     return `Bucket "${s3ThumbnailBucketName}" has been created successfully.`;
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'createThumbnailBucket',
@@ -148,43 +153,33 @@ exports.createThumbnailBucket = async () => {
       cfId,
       extendedRequestId
     });
-    return false;
   }
 };
 
 exports.getIsVideoObjectAvailable = async key => {
   try {
-    const params = {
-      Bucket: s3VideoBucketName,
-      Key: key
-    };
+    const params = getS3VideoParams(key);
     const command = new HeadObjectCommand(params);
     await s3Client.send(command);
     return true; // Object exists
   } catch (error) {
-    if (error.name === 'NotFound') {
-      return false; // Object does not exist
-    } else {
-      const { requestId, cfId, extendedRequestId } = error.$metadata;
-      logger.error({
-        message: 'getIsVideoObjectAvailable',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      return false; // Object does not exist
-    }
+    logger.error(err);
+    const { requestId, cfId, extendedRequestId } = error.$metadata;
+    logger.error({
+      message: 'getIsVideoObjectAvailable',
+      requestId,
+      cfId,
+      extendedRequestId
+    });
+    return false; // Object does not exist
   }
 };
 
 exports.getIsThumbnailObjectAvailable = async key => {
   try {
-    const params = {
-      Bucket: s3ThumbnailBucketName,
-      Key: key
-    };
+    const params = getS3ThumbnailParams(key);
     const command = new HeadObjectCommand(params);
-    await s3Client.send(command);
+    await s3Client.send(new HeadObjectCommand(command));
     return true; // Object exists
   } catch (error) {
     if (error.name === 'NotFound') {
@@ -209,7 +204,8 @@ exports.copyVideoObject = (oldKey, newKey) => {
         ...getS3VideoParams(newKey),
         CopySource: `${s3VideoBucketName}/${getVideoObjectKey(oldKey)}`
       };
-      await s3Client.send(new CopyObjectCommand(params));
+      const command = new CopyObjectCommand(params);
+      await s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
@@ -229,10 +225,11 @@ exports.copyThumbnailObject = (oldKey, newKey) => {
   return new Promise(async (resolve, reject) => {
     try {
       const params = {
-        ...getS3CoverImageParams(newKey),
+        ...getS3ThumbnailParams(newKey),
         CopySource: `${s3ThumbnailBucketName}/${getThumbnailObjectKey(oldKey)}`
       };
-      await s3Client.send(new CopyObjectCommand(params));
+      const command = new CopyObjectCommand(params);
+      await s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
@@ -251,7 +248,9 @@ exports.copyThumbnailObject = (oldKey, newKey) => {
 exports.deleteVideoByKey = key => {
   return new Promise((resolve, reject) => {
     try {
-      s3Client.send(new DeleteObjectCommand(getS3VideoParams(key)));
+      const params = getS3VideoParams(key);
+      const command = new DeleteObjectCommand(params);
+      s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
@@ -270,7 +269,9 @@ exports.deleteVideoByKey = key => {
 exports.deleteThumbnailByKey = key => {
   return new Promise((resolve, reject) => {
     try {
-      s3Client.send(new DeleteObjectCommand(getS3ThumbnailParams(key)));
+      const params = getS3ThumbnailParams(key);
+      const command = new DeleteObjectCommand(params);
+      s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
@@ -279,6 +280,7 @@ exports.deleteThumbnailByKey = key => {
         message: 'deleteThumbnailByKey',
         requestId,
         cfId,
+        key,
         extendedRequestId
       });
       reject(err);
@@ -289,32 +291,30 @@ exports.deleteThumbnailByKey = key => {
 /**
  * Song helper functions
  */
-exports.getSongObjectKey = key => {
+const getSongObjectKey = key => {
   return `${key}.${DEFAULT_SONG_FILE_EXTENTION}`;
 };
 
-exports.getCoverImageObjectKey = key => {
+const getCoverImageObjectKey = key => {
   return `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
 };
 
-const getS3SongParams = (key = '') => {
-  const params = {
-    Bucket: s3SongBucketName
+const getS3SongParams = key => {
+  return {
+    Bucket: s3SongBucketName,
+    ...(key && {
+      Key: getSongObjectKey(key)
+    })
   };
-  if (key) {
-    params.Key = getSongObjectKey(key);
-  }
-  return params;
 };
 
-const getS3CoverImageParams = (key = '') => {
-  const params = {
-    Bucket: s3CoverImageBucketName
+const getS3CoverImageParams = key => {
+  return {
+    Bucket: s3CoverImageBucketName,
+    ...(key && {
+      Key: getCoverImageObjectKey(key)
+    })
   };
-  if (key) {
-    params.Key = getCoverImageObjectKey(key);
-  }
-  return params;
 };
 
 exports.getSongDistributionURI = key => {
@@ -327,10 +327,12 @@ exports.getCoverImageDistributionURI = key => {
 
 exports.getIsSongBucketAvailable = async () => {
   try {
-    const command = new HeadBucketCommand({ Bucket: s3SongBucketName });
+    const params = getS3SongParams();
+    const command = new HeadBucketCommand(params);
     await s3Client.send(command);
     return true; // Bucket exists and is accessible
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'getIsSongBucketAvailable',
@@ -344,10 +346,12 @@ exports.getIsSongBucketAvailable = async () => {
 
 exports.getIsCoverImageBucketAvailable = async () => {
   try {
-    const command = new HeadBucketCommand({ Bucket: s3CoverImageBucketName });
+    const params = getS3CoverImageParams();
+    const command = new HeadBucketCommand(params);
     await s3Client.send(command);
     return true; // Bucket exists and is accessible
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'getIsCoverImageBucketAvailable',
@@ -361,60 +365,52 @@ exports.getIsCoverImageBucketAvailable = async () => {
 
 exports.getIsSongObjectAvailable = async key => {
   try {
-    const params = {
-      Bucket: s3SongBucketName,
-      Key: key
-    };
-    const command = new HeadObjectCommand(params);
+    const params = getS3SongParams(key);
+    const command = new HeadBucketCommand(params);
     await s3Client.send(command);
     return true; // Object exists
   } catch (error) {
-    if (error.name === 'NotFound') {
-      return false; // Object does not exist
-    } else {
-      const { requestId, cfId, extendedRequestId } = error.$metadata;
-      logger.error({
-        message: 'getIsSongObjectAvailable',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      return false; // Object does not exist
-    }
+    logger.error(err);
+    const { requestId, cfId, extendedRequestId } = error.$metadata;
+    logger.error({
+      message: 'getIsSongObjectAvailable',
+      requestId,
+      cfId,
+      key,
+      extendedRequestId
+    });
+    return false; // Object does not exist
   }
 };
 
 exports.getIsCoverImageObjectAvailable = async key => {
   try {
-    const params = {
-      Bucket: s3CoverImageBucketName,
-      Key: key
-    };
+    const params = getS3CoverImageParams(key);
     const command = new HeadObjectCommand(params);
     await s3Client.send(command);
     return true; // Object exists
   } catch (error) {
-    if (error.name === 'NotFound') {
-      return false; // Object does not exist
-    } else {
-      const { requestId, cfId, extendedRequestId } = error.$metadata;
-      logger.error({
-        message: 'getIsCoverImageObjectAvailable',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      return false; // Object does not exist
-    }
+    logger.error(err);
+    const { requestId, cfId, extendedRequestId } = error.$metadata;
+    logger.error({
+      message: 'getIsCoverImageObjectAvailable',
+      requestId,
+      cfId,
+      key,
+      extendedRequestId
+    });
+    return false; // Object does not exist
   }
 };
 
 exports.createSongBucket = async () => {
   try {
-    const command = new CreateBucketCommand({ Bucket: s3SongBucketName });
+    const params = getS3SongParams();
+    const command = new CreateBucketCommand(params);
     await s3Client.send(command);
     return `Bucket "${s3SongBucketName}" has been created successfully.`;
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'createSongBucket',
@@ -422,16 +418,17 @@ exports.createSongBucket = async () => {
       cfId,
       extendedRequestId
     });
-    return false;
   }
 };
 
 exports.createCoverImageBucket = async () => {
   try {
-    const command = new CreateBucketCommand({ Bucket: s3CoverImageBucketName });
+    const params = getS3CoverImageParams();
+    const command = new CreateBucketCommand(params);
     await s3Client.send(command);
     return `Bucket "${s3CoverImageBucketName}" has been created successfully.`;
   } catch (error) {
+    logger.error(err);
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     logger.error({
       message: 'createCoverImageBucket',
@@ -439,7 +436,6 @@ exports.createCoverImageBucket = async () => {
       cfId,
       extendedRequestId
     });
-    return false;
   }
 };
 
@@ -450,7 +446,8 @@ exports.copySongObject = (oldKey, newKey) => {
         ...getS3SongParams(newKey),
         CopySource: `${s3SongBucketName}/${getSongObjectKey(oldKey)}`
       };
-      await s3Client.send(new CopyObjectCommand(params));
+      const command = new CopyObjectCommand(params);
+      await s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
@@ -459,6 +456,7 @@ exports.copySongObject = (oldKey, newKey) => {
         message: 'copySongObject',
         requestId,
         cfId,
+        oldKey,
         extendedRequestId
       });
       reject(err);
@@ -475,7 +473,8 @@ exports.copyCoverImageObject = (oldKey, newKey) => {
           oldKey
         )}`
       };
-      await s3Client.send(new CopyObjectCommand(params));
+      const command = new CopyObjectCommand(params);
+      await s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
@@ -484,6 +483,7 @@ exports.copyCoverImageObject = (oldKey, newKey) => {
         message: 'copyCoverImageObject',
         requestId,
         cfId,
+        oldKey,
         extendedRequestId
       });
       reject(err);
@@ -494,7 +494,9 @@ exports.copyCoverImageObject = (oldKey, newKey) => {
 exports.deleteSongByKey = key => {
   return new Promise((resolve, reject) => {
     try {
-      s3Client.send(new DeleteObjectCommand(getS3SongParams(key)));
+      const params = getS3SongParams(key);
+      const command = new DeleteObjectCommand(params);
+      s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
@@ -503,6 +505,7 @@ exports.deleteSongByKey = key => {
         message: 'deleteSongByKey',
         requestId,
         cfId,
+        key,
         extendedRequestId
       });
       reject(err);
@@ -513,7 +516,9 @@ exports.deleteSongByKey = key => {
 exports.deleteCoverImageByKey = key => {
   return new Promise(async (resolve, reject) => {
     try {
-      await s3Client.send(new DeleteObjectCommand(getS3CoverImageParams(key)));
+      const params = getS3CoverImageParams(key);
+      const command = new DeleteObjectCommand(params);
+      await s3Client.send(command);
       resolve();
     } catch (err) {
       logger.error(err);
