@@ -1,7 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import { CodeRepository, UserRepository } from '../repository';
+import { CodeRepository, LoginRepository, UserRepository } from '../repository';
 import {
   HttpStatusCodes,
   badRequest,
@@ -13,24 +13,30 @@ import {
   verifyJWTToken
 } from '../utilities/token';
 
-exports.validateLogin = async (email, password) => {
+exports.validateLogin = async (email, password, ipAddress, userAgent) => {
   try {
     const [error, user] = await UserRepository.getUserByEmail(email);
     if (user) {
       const validPassword = user.getIsValidPassword(password);
       if (validPassword) {
-        const [error, updatedUser] = await UserRepository.updateLastLogin(
-          user.userId
+        const [error, lastLogin] = await LoginRepository.updateLastLogin(
+          user.userId,
+          ipAddress,
+          userAgent
         );
         if (error) {
           return badRequest(error.message);
         }
         const token = generateAuthorizationToken(user);
+        const authenicatedUser = {
+          ...user.toJSON(),
+          lastLoggedIn: lastLogin.lastLoggedIn
+        };
         return [
           HttpStatusCodes.OK,
           {
             message: 'Successful login',
-            user: updatedUser,
+            user: authenicatedUser,
             token
           }
         ];

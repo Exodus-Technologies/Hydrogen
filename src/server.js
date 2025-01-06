@@ -18,6 +18,7 @@ import {
 } from './middlewares';
 import {
   authRouter,
+  loginRouter,
   mainRouter,
   notFoundRouter,
   permissionRouter,
@@ -49,21 +50,21 @@ logger.info('Loaded error handler middleware.');
 server.use(requestResponseHandler);
 logger.info('Loaded request/response middleware.');
 
+//Cors middleware
+server.use(
+  cors({
+    origin: config.FRONT_END_APP_ORIGIN_URL, // Replace with the origin of your frontend app
+    credentials: true // Allow cookies and authentication headers
+  })
+);
+logger.info('CORS enabled.');
+
 if (isProductionEnvironment()) {
   const { TRUST_PROXY } = config;
 
   // specify a single subnet
   server.set('trust proxy', TRUST_PROXY);
   logger.info('Proxy setting enabled.');
-
-  //Cors middleware
-  server.use(
-    cors({
-      origin: config.FRONT_END_APP_ORIGIN_URL, // Replace with the origin of your frontend app
-      credentials: true // Allow cookies and authentication headers
-    })
-  );
-  logger.info('CORS enabled.');
 
   //Helmet middleware
   server.use(helmet());
@@ -98,6 +99,7 @@ server.use(BASE_URL, permissionRouter);
 logger.info('Loaded permission routes middleware.');
 
 server.use(BASE_URL, authRouter);
+server.use(BASE_URL, loginRouter);
 logger.info('Loaded auth routes middleware.');
 
 server.use(BASE_URL, userRouter);

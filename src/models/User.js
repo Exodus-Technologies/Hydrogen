@@ -36,10 +36,6 @@ const userSchema = new Schema(
     permissions: {
       type: [String],
       required: true
-    },
-    lastLoggedIn: {
-      type: Date,
-      default: Date.now()
     }
   },
   { timestamps: true }
