@@ -2,11 +2,12 @@
 
 import logger from '../logger';
 import { AuthService } from '../services';
+import { getClientIpAddress } from '../utilities/system';
 
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const ipAddress = req.ip;
+    const ipAddress = getClientIpAddress(req);
     const userAgent = req.get('User-Agent');
     const [statusCode, response] = await AuthService.validateLogin(
       email,

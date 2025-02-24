@@ -61,14 +61,6 @@ export const closeDatabaseConnections = () => {
   return source.disconnect();
 };
 
-export const gracefulExit = () => {
-  //Gracefully shuts down application by disconnecting from all active connections to db and then process.exit(0)
-  logger.info('Shutting down application.');
-  closeDatabaseConnections().then(() => {
-    process.exit(0);
-  });
-};
-
 export const seedPermissions = async () => {
   const { Permission } = models;
 

@@ -10,26 +10,8 @@ import source, {
 } from './database';
 import logger from './logger';
 import server from './server';
+import { normalizePort } from './utilities/system';
 import { getCurrentUTCTimestampFormatted } from './utilities/time';
-
-/**
- * Convert server port string to number
- */
-const normalizePort = val => {
-  const port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-};
 
 /**
  * Connects to database
