@@ -1,6 +1,9 @@
 const config = {
   verbose: true,
+  testEnvironment: 'node',
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['src/**/*.js'],
   collectCoverage: true
 };
 
-export default config;
+module.exports = config;
