@@ -85,7 +85,7 @@ if (isProductionEnvironment()) {
   server.use(compression());
   logger.info('Loaded compression middleware.');
 
-  server.use(rateLimitHandler);
+  server.use(rateLimitHandler());
   logger.info('Loaded rate limit middleware.');
 }
 
