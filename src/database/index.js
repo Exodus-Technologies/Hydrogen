@@ -69,6 +69,9 @@ export const gracefulExit = () => {
   });
 };
 
+/**
+ * System Admin > Manager(s) > Content Creator > Fan/Subscriber
+ */
 export const seedPermissions = async () => {
   const { Permission } = models;
 
@@ -218,9 +221,7 @@ export const seedPermissions = async () => {
     logger.error(`Error seeding permissions: ${err.message}`);
   }
 };
-/**
- * System Admin > Manager(s) > Content Creator > Fan/Subscriber
- */
+
 export const seedRoles = async () => {
   const { Role } = models;
   const roles = [

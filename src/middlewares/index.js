@@ -41,14 +41,13 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-const rateLimitHandler = () =>
-  rateLimit({
-    windowMs: RATE_LIMIT_MS,
-    max: RATE_LIMIT_MAX,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: 'Too many calls made from this specific IP, please try again later'
-  });
+const rateLimitHandler = rateLimit({
+  windowMs: RATE_LIMIT_MS,
+  max: RATE_LIMIT_MAX,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many calls made from this specific IP, please try again later'
+});
 
 const validationHandler = (req, res, next) => {
   const errors = validationResult(req).formatWith(errorFormatter);
